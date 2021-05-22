@@ -11,6 +11,7 @@ using namespace std;
 using namespace boost;
 
 enum mart_t {UNVISITED, VISITED};
+enum graph_type {ADJ_LIST, ADJ_MATRIX};
 
 struct vertex{
 	int id;
@@ -19,6 +20,8 @@ struct vertex{
 
 class Graph{
 	private:
+		int n; //number of verticies
+		int m; //number of edges
 		//adjacency matrix
 		adjacency_matrix<undirectedS> adj_matrix;
 		//adjacency list
@@ -28,7 +31,7 @@ class Graph{
 
 
 	public:
-		Graph(const string& fileName);
+		Graph(const string& fileName, graph_type);
 		int getNeighbors() const;
 		void tsp() const;
 		void tsp_brute_force() const;
