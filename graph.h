@@ -1,8 +1,7 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-
-#include "boost/graph/adjacency_list.hpp"
+#include <boost/graph/adjacency_list.hpp>
 #include <iostream>
 #include <string>
 #include <unordered_map>

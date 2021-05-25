@@ -1,9 +1,8 @@
 #include "graph.h"
-#include "boost/graph/adjacency_list.hpp"
-#include "boost/graph/adjacency_matrix.hpp"
+#include <boost/graph/adjacency_list.hpp>
 #include <iostream>
 #include <string>
-#include <ifstream>
+#include <fstream>
 
 using namespace std;
 using namespace boost;
@@ -20,7 +19,7 @@ Graph::Graph(const string& fileName, graph_type gt){
   ifile >> e;
 
 
-  adj_list Graph(n);
+  adj_list(n);
   double matrix [n][n] = 0.0;
 
   for(int i = 0; i < n; i++){
