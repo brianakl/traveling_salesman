@@ -17,7 +17,7 @@ enum graph_type {ADJ_LIST, ADJ_MATRIX};
 class Graph{
 	private:
 		int n; //number of verticies'
-		int e;
+		int e; //number of edges
 		//adjacency list
 		typedef boost::property<edge_weight_t, double> EdgeWeightProperty;
 		typedef boost::adjacency_list<boost::listS, boost::vecS, boost::undirectedS, boost::no_property, EdgeWeightProperty> adj_list;

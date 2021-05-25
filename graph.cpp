@@ -37,7 +37,7 @@ Graph::Graph(const string& fileName, graph_type gt){
   for (int i = 1; i < n; i++){
     for (int j = 0; j < n; j++){
       if (matrix[i][j] == 0.0) break;
-      add_edge(i,j, matrix[i][j], Graph)
+      add_edge(i,j, matrix[i][j], Graph); //adds an edge between vertex i and j of weight matrix[i][j] to the graph
     }
   }
 
