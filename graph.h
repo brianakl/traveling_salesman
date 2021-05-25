@@ -3,27 +3,24 @@
 
 
 #include "boost/graph/adjacency_list.hpp"
-#include "boost/graph/adjacency_matrix.hpp"
 #include <iostream>
 #include <string>
 #include <unordered_map>
 
 using namespace std;
-using namespace boost;
 
 enum mart_t {UNVISITED, VISITED};
 enum graph_type {ADJ_LIST, ADJ_MATRIX};
+
 
 
 class Graph{
 	private:
 		int n; //number of verticies'
 		int e;
-		//unordered_map<int, string> state;	//map of vertex labels
-		//adjacency matrix
-		adjacency_matrix<undirectedS> adj_matrix;
 		//adjacency list
-		adjacency_list<undirectedS> adj_list;
+		typedef boost::property<edge_weight_t, double> EdgeWeightProperty;
+		typedef boost::adjacency_list<boost::listS, boost::vecS, boost::undirectedS, boost::no_property, EdgeWeightProperty> adj_list;
 
 
 

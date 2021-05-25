@@ -20,19 +20,27 @@ Graph::Graph(const string& fileName, graph_type gt){
   ifile >> e;
 
 
-  if (gt == ADJ_LIST){
-    adj_list g(n);
-  } else {
-    adj_matrix g(n);
-  }
-  int origin = 0, dest = 0;
-  double coordinates [2][n] = 0.0;
-  //coordinates input
-  while(ifile >> origin && ifile >> dest){
+  adj_list Graph(n);
+  double matrix [n][n] = 0.0;
 
+  for(int i = 0; i < n; i++){
+    for(int j = 0; j < n; j++){
+      ifile >> matrix[i][j];
+    }
   }
 
-  //adjacency list input
+  //add all verticies
+  for (int i =0; i < n; i++){
+    add_vertex(i,g);
+  }
+  //add edges with weights
+  for (int i = 1; i < n; i++){
+    for (int j = 0; j < n; j++){
+      if (matrix[i][j] == 0.0) break;
+      add_edge(i,j, matrix[i][j], Graph)
+    }
+  }
+
 
 
   ifile.close();
