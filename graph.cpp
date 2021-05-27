@@ -2,6 +2,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/graph_traits.hpp>
+#include <boost/graph/graph_traits.hpp>
 #include <iostream>
 #include <string>
 #include <map>
@@ -116,8 +117,17 @@ stack<double> TSP::tsp_brute_force() const{
   cout << endl;
 
   vertex_pair vp;
+  out_edge_iter out_end;
+  edge_des ed;
   for (vp = vertices(*adj_list); vp.first != vp.second; vp.first++){
-    cout << index_map[*vp.first] << " " << endl;
+    cout << index_map[*vp.first];
+    for (out_edge_pair out_i = out_edges(*vp.first, *adj_list); out_i.first != out_i.second; out_i.first++){
+      ed = *out_i.first;
+      vertex_des src = source(ed, *adj_list), targ = target(ed, *adj_list);
+      cout << " (" << index_map[src] << "," << index_map[targ] << ")" << edge_weight_map[*out_i.first] << " ";
+    }
+    cout << endl;
+
   }
 
   return p;
