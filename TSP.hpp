@@ -13,26 +13,34 @@
 using namespace std;
 using namespace boost;
 
-enum mart_t {UNVISITED, VISITED};
-enum graph_type {ADJ_LIST, ADJ_MATRIX};
+enum mark_t {UNVISITED, VISITED};
+typedef property<edge_weight_t, double> EdgeWeightProperty;
+
+typedef adjacency_list<vecS, vecS, undirectedS, no_property, EdgeWeightProperty> Graph;
+
+typedef property_map<Graph, edge_weight_t>::type EdgeWeightMap;
+typedef property_map<Graph, vertex_index_t>::type IndexMap;
+typedef graph_traits<Graph>::edge_iterator edge_iter;
+typedef graph_traits<Graph>::edge_descriptor edge_des;
+typedef pair<edge_iter, edge_iter> edge_pair;
+
+typedef graph_traits<Graph>::vertex_iterator vertex_iter;
+typedef graph_traits<Graph>::vertex_descriptor vertex_des;
+typedef pair<vertex_iter, vertex_iter> vertex_pair;
 
 
 
 class TSP{
 	private:
-		int n = 0; //number of verticies'
-		int e = 0; //number of edges
+		int n; //number of vertices
+		int e; //number of edges
 		//adjacency list
-		typedef property<edge_weight_t, double> EdgeWeightProperty;
-		typedef adjacency_list<vecS, vecS, undirectedS, no_property, EdgeWeightProperty> Graph;
 		Graph adj_list();
-		property_map<Graph, edge_weight_t>::type EdgeWeightMap;
-		typedef graph_traits<Graph>::edge_iterator edge_it;
-		typedef graph_traits<Graph>::vertex_iterator v_it;
 
-
-		
-
+		//edge weight property map
+		EdgeWeightMap edge_weight_map;
+		//index map for vertices
+		IndexMap index_map;
 
 
 
@@ -40,7 +48,7 @@ class TSP{
 		TSP(const string& fileName);
 		int getNeighbors() const;
 		void tsp() const;
-		void tsp_brute_force() const;
+		IndexMap tsp_brute_force() const;
 
 };
 
