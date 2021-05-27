@@ -8,6 +8,8 @@
 #include <iostream>
 #include <string>
 #include <utility>
+#include <stack>
+#include <vector>
 
 
 using namespace std;
@@ -35,7 +37,7 @@ class TSP{
 		int n; //number of vertices
 		int e; //number of edges
 		//adjacency list
-		Graph adj_list();
+		Graph *adj_list;
 
 		//edge weight property map
 		EdgeWeightMap edge_weight_map;
@@ -48,7 +50,8 @@ class TSP{
 		TSP(const string& fileName);
 		int getNeighbors() const;
 		void tsp() const;
-		IndexMap tsp_brute_force() const;
+		stack<double> tsp_brute_force() const;
+		double distance(stack<edge_pair>) const;
 
 };
 

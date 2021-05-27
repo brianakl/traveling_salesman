@@ -7,6 +7,7 @@
 #include <map>
 #include <fstream>
 #include <utility>
+#include <vector>
 
 using namespace std;
 using namespace boost;
@@ -22,8 +23,7 @@ TSP::TSP(const string& fileName){
   ifile >> this->n;
   ifile >> this->e;
 
-
-  Graph adj_list(n);
+  adj_list = new Graph(n);
   double matrix [this->n][this->n];
 
   for(int i = 0; i < this->n; i++){
@@ -31,16 +31,6 @@ TSP::TSP(const string& fileName){
       ifile >> matrix[i][j];
     }
   }
-  //boost::adjacency_list<boost::listS, boost::vecS, boost::undirectedS, boost::no_property, EdgeWeightProperty> adj_list(this->n);
-
-  //add all verticies
-  typedef graph_traits<Graph>::vertex_descriptor vertex_t;
-
-  for (int i = 0; i < this->n; i++){
-    vertex_t v = add_vertex(adj_list);
-    
-  }
-  
 
   //add edges with weights
   //adds an edge between vertex i and j of weight matrix[i][j] to the graph
@@ -48,7 +38,7 @@ TSP::TSP(const string& fileName){
   for (int i = 1; i < this->n; i++){
     for (int j = 0; matrix[i][j] != 0.0; j++){
       ewp = matrix[i][j];
-      add_edge(i,j, ewp, adj_list); 
+      add_edge(i,j, ewp, *adj_list); 
     }
   }
 
@@ -60,12 +50,12 @@ TSP::TSP(const string& fileName){
 
   //get the property map for vertex indices
   //typedef property_map<Graph,vertex_index_t>::type IndexMap;
-  index_map = get(vertex_index, adj_list);
+  this->index_map = get(vertex_index, *adj_list);
 
   cout << "vertices(adj_list) = ";
   vertex_pair vp;
   vertex_des v;
-  for (vp = vertices(adj_list); vp.first != vp.second; vp.first++){
+  for (vp = vertices(*adj_list); vp.first != vp.second; vp.first++){
     v = *vp.first;
     cout << index_map[v] << " ";
   }
@@ -75,27 +65,65 @@ TSP::TSP(const string& fileName){
   
 
   //accessing edges
+  /*
   cout << "edges(adj_list) = ";
   edge_iter ei, ei_end;
   for (tie(ei,ei_end) = edges(adj_list); ei != ei_end; ei++){
-    cout << "(" << index_map[source(*ei, adj_list)] << "," << index_map[target(*ei,adj_list)]
+    cout << "(" << index_map[source(*ei, adj_list)] << "," << index_map[target(*ei, adj_list)]
       << ") ";
   }
   cout << endl;
 
 
-edge_weight_map = get(edge_weight_t(), adj_list);
-edge_pair ep;
-for (ep = edges(adj_list); ep.first != ep.second; ep.first++){
-  cout << edge_weight_map[*ep.first] << " ";
-}
-cout << endl;
+  this->edge_weight_map = get(edge_weight_t(), adj_list);
+  edge_pair ep;
+  for (ep = edges(adj_list); ep.first != ep.second; ep.first++)
+    cout << edge_weight_map[*ep.first] << " ";
+  cout << endl << endl;
 
- 
+  
+
+  //edges + edge weights
+
+
+  edge_pair edg, ep;
+  cout << "edges(adj_list)distance:  ";
+  //for (tie(ei,ei_end) = edges(adj_list), ep = edges(adj_list);ei != ei_end; ei++, ep.first++)
+  for (edg = edges(*adj_list), ep = edges(*adj_list); edg.first != edg.second; ep.first++, edg.first++)
+    cout << "(" << index_map[source(*edg.first,*adj_list)] << "," <<
+            index_map[target(*edg.first,*adj_list)] << ")" << edge_weight_map[*ep.first] <<
+            " ";
+  cout << endl;
+  */
 
 
 
   ifile.close();
 
 
+}
+
+
+stack<double> TSP::tsp_brute_force() const{
+  
+  stack<double> p;
+  edge_pair ep;
+  p.push(2.3);
+  cout << endl << endl;
+  for (ep = edges(*adj_list); ep.first != ep.second; ep.first++){
+    cout << edge_weight_map[*ep.first] << " " << *ep.first << endl;
+  }
+  cout << endl;
+
+  vertex_pair vp;
+  for (vp = vertices(*adj_list); vp.first != vp.second; vp.first++){
+    cout << index_map[*vp.first] << " " << endl;
+  }
+
+  return p;
+
+}
+
+double TSP::distance(stack<edge_pair> path) const{
+  
 }
