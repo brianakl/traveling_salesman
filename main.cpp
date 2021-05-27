@@ -5,7 +5,7 @@ using namespace std;
 
 int main(){
 
-	TSP tsp();
+	TSP tsp("tsp_distance_matrix.txt");
 
 
 
