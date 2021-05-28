@@ -134,7 +134,6 @@ stack<double> TSP::tsp_brute_force() const{
 
 //recursively returns the total distance of a path
 double TSP::distance(vector<int> path, int i) const{
-  vertex_pair vp = vertices(*adj_list), dist;
   out_edge_pair out_i;
   double ret = 0;
 
@@ -144,15 +143,13 @@ double TSP::distance(vector<int> path, int i) const{
     //1) find coressponding out edges
     out_i = out_edges(index_map[path[0]], *adj_list);
 
-    //edge_weight_map need an out edge iterator
-
-    //find where target(out_p.first) == index_map[path[i]]
+    //find where target(out_i.first) == index_map[path[i]]
     for (;out_i.first != out_i.second; out_i.first++){
       if (target(*out_i.first, *adj_list) == index_map[path[i]]) break;
     }
     return edge_weight_map[*out_i.first];
-
   }
+
   for (out_i = out_edges(index_map[path[i]], *adj_list); out_i.first != out_i.second; out_i.first++){
     if (target(*out_i.first, *adj_list) == index_map[path[i+1]]) break;
   }
@@ -165,9 +162,8 @@ vector<int> TSP::nearest_neighbor_path() const{
   vector<int> ret;
   vertex_pair current = vertices(*adj_list), next;
   out_edge_pair out_i = out_edges(*current.first, *adj_list), shortest_edge = out_i, q;
-  vertex_des closestTarg = target(*out_i.first, *adj_list),
-             closestS = source(*out_i.first, *adj_list),
-             temp;
+  vertex_des closestTarg = target(*out_i.first, *adj_list);
+
   bool visited[n];
 
   for (int i =0; i <n ; i++)
@@ -178,46 +174,41 @@ vector<int> TSP::nearest_neighbor_path() const{
   ret.push_back(0);
   for(int i = 0; i < n-1; i++){
     out_i = out_edges(*current.first, *adj_list);
-    temp = source(*out_i.first, *adj_list);
     shortest_edge = out_i;
 
     //shortest_edge needs to be set to the first available edge
     //vertex it targets needs to not be visited
     
-    while (visited[index_map[target(*shortest_edge.first, *adj_list)]] && shortest_edge.first+1 != shortest_edge.second)
-      shortest_edge.first++;
+    for (;shortest_edge.first+1 != shortest_edge.second; shortest_edge.first++){
+      if (!visited[index_map[target(*shortest_edge.first, *adj_list)]]) break;
+    }
 
-    
     //traversing through the out_edges to find one with a lower edge weight
 
 
     closestTarg = target(*(shortest_edge.first), *adj_list);
-    closestS = source(*(shortest_edge.first), *adj_list);
-    //cout << "ClosestS: " <<index_map[closestS] << " ClosestTarg: " << index_map[closestTarg] << endl;
+
     for(;out_i.first != out_i.second; out_i.first++){
       //if this node is unvisited and the distance between current node > closest node then continue
       if (!visited[index_map[target(*out_i.first, *adj_list)]]) {
-        //cout << "vertex: " << index_map[target(*out_i.first, *adj_list)] << endl;
         if (edge_weight_map[*shortest_edge.first] > edge_weight_map(*out_i.first)){
           closestTarg = target(*out_i.first, *adj_list);
-          closestS = source(*out_i.first, *adj_list);
           shortest_edge = out_i;
-          //cout << "ClosestTarg: " << index_map[closestTarg] << endl;
+
         }
       }      
     }
-    visited[index_map[closestS]] = true;
+    visited[index_map[*current.first]] = true;
     ret.push_back(index_map[closestTarg]);
+    
     //search through the vertex list to find a vertex_des that matches closestTarg
-    next = vertices(*adj_list);
-    for (; next.first != next.second && *next.first != closestTarg; next.first++){
-
+    for (next = vertices(*adj_list); next.first != next.second; next.first++){
+      if (*next.first == closestTarg) break;
     }
     if (next.first == next.second)  break;
 
-    //cout << "current.first : " << index_map[*current.first] << endl << "next.first: " << index_map[*next.first] << endl << endl;
     current.first = next.first;
-    //cout << "new current.first: " << index_map[*current.first] << endl << endl;
+
     
   }
 
