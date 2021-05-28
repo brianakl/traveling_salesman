@@ -1,4 +1,4 @@
-#include "TSP.hpp"
+#include "TSP.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <iostream>
@@ -41,95 +41,53 @@ TSP::TSP(const string& fileName){
   }
 
 
-/*
-
-  //how to access a vertex
-  
-  //get the property map for vertex indices
-  //typedef property_map<Graph,vertex_index_t>::type IndexMap;
-  this->index_map = get(vertex_index, *adj_list);
-
-  //cout << "vertices(adj_list) = ";
-  vertex_pair vp;
-  vertex_des v;
-  for (vp = vertices(*adj_list); vp.first != vp.second; vp.first++){
-    v = *vp.first;
-    cout << index_map[v] << " ";
+  vertex_set = vertices(*adj_list);
+  for (int i = 0; i < n; i++){
+    mrk.push_back(UNVISITED);
   }
-
-  cout << endl;
-
-  
-
-  //accessing edges
-  
-  cout << "edges(adj_list) = ";
-  edge_iter ei, ei_end;
-  for (tie(ei,ei_end) = edges(adj_list); ei != ei_end; ei++){
-    cout << "(" << index_map[source(*ei, adj_list)] << "," << index_map[target(*ei, adj_list)]
-      << ") ";
-  }
-  cout << endl;
-
-
-  this->edge_weight_map = get(edge_weight_t(), adj_list);
-  edge_pair ep;
-  for (ep = edges(adj_list); ep.first != ep.second; ep.first++)
-    cout << edge_weight_map[*ep.first] << " ";
-  cout << endl << endl;
-
-  
-
-  //edges + edge weights
-
-
-  edge_pair edg, ep;
-  cout << "edges(adj_list)distance:  ";
-  //for (tie(ei,ei_end) = edges(adj_list), ep = edges(adj_list);ei != ei_end; ei++, ep.first++)
-  for (edg = edges(*adj_list), ep = edges(*adj_list); edg.first != edg.second; ep.first++, edg.first++)
-    cout << "(" << index_map[source(*edg.first,*adj_list)] << "," <<
-            index_map[target(*edg.first,*adj_list)] << ")" << edge_weight_map[*ep.first] <<
-            " ";
-  cout << endl;
-*/
-
-
 
   ifile.close();
 
 
 }
+void TSP::tsp_brute(){
+  tsp_brute_forceR(index_map[0],index_map[0]);
+  print_path(best);
+}
 
 //this function finds the shortest path by trying every possible path
-stack<double> TSP::tsp_brute_force() const{
-
-
-  
-  stack<double> p;
-  edge_pair ep;
-  p.push(2.3);
-  cout << endl << endl;
-  for (ep = edges(*adj_list); ep.first != ep.second; ep.first++){
-    cout << edge_weight_map[*ep.first] << " " << *ep.first << endl;
-  }
-  cout << endl;
-
-  vertex_pair vp;
-  edge_des ed;
-  for (vp = vertices(*adj_list); vp.first != vp.second; vp.first++){
-    cout << index_map[*vp.first];
-    for (out_edge_pair out_i = out_edges(*vp.first, *adj_list); out_i.first != out_i.second; out_i.first++){
-      vertex_des src = source(*out_i.first, *adj_list), 
-                targ = target(*out_i.first, *adj_list);
-      cout << " (" << index_map[src] << "," << index_map[targ] << ")" << 
-              edge_weight_map[*out_i.first] << " ";
+void TSP::tsp_brute_forceR(vertex_des v, vertex_des start, int dist){
+  cycle.push_back(index_map[v]);
+  mrk[index_map[v]] = VISITED;
+  bool atEnd = true;
+  out_edge_pair out_i, out_u;
+  for(out_i = out_edges(v, *adj_list); out_i.first != out_i.second; out_i.first++){
+    if (mrk[index_map[target(*out_i.first, *adj_list)]] == UNVISITED){
+      tsp_brute_forceR(target(*out_i.first, *adj_list), start, dist + edge_weight_map[*out_i.first]);
+      atEnd = false;
     }
-    cout << endl;
   }
 
-  return p;
-  
+  if (atEnd){
+    for(out_u = out_edges(index_map[start], *adj_list); out_u.first != out_u.second; out_u.first++){
+      if (target(*out_u.first, *adj_list) == index_map[v]) break;
+    }
+    dist += edge_weight_map[*out_u.first];
+    if (dist < min){
+      min = dist;
+      best = cycle;
+    }
+  }
+  mrk[index_map[v]] = UNVISITED;
+  cycle.pop_back();
+}
 
+void TSP::print_path(vector<int> path) {
+  cout << "Best Cycle:" << endl;
+  for (int i = 0; i < n; i++){
+    cout << path[i] << " ";
+  }
+  cout << endl << "Total Distance: " << distance(path) << endl;
 }
 
 //recursively returns the total distance of a path
@@ -140,7 +98,6 @@ double TSP::distance(vector<int> path, int i) const{
   //if the current vertex is the last vertex in the vector the the edge
   //weight between the first and last need to be returned
   if (path[i+1] == *path.end()){
-    //1) find coressponding out edges
     out_i = out_edges(index_map[path[0]], *adj_list);
 
     //find where target(out_i.first) == index_map[path[i]]
@@ -153,7 +110,6 @@ double TSP::distance(vector<int> path, int i) const{
   for (out_i = out_edges(index_map[path[i]], *adj_list); out_i.first != out_i.second; out_i.first++){
     if (target(*out_i.first, *adj_list) == index_map[path[i+1]]) break;
   }
-  
   return edge_weight_map[*out_i.first] + distance(path, ++i);
 }
 
@@ -200,7 +156,7 @@ vector<int> TSP::nearest_neighbor_path() const{
     }
     visited[index_map[*current.first]] = true;
     ret.push_back(index_map[closestTarg]);
-    
+
     //search through the vertex list to find a vertex_des that matches closestTarg
     for (next = vertices(*adj_list); next.first != next.second; next.first++){
       if (*next.first == closestTarg) break;

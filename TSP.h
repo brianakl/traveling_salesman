@@ -14,7 +14,7 @@
 using namespace std;
 using namespace boost;
 
-enum mark_t {UNVISITED, VISITED};
+enum mark_t {UNVISITED, VISITED, START};
 
 //General Graph and Graph edge weight property
 typedef property<edge_weight_t, double> EdgeWeightProperty;
@@ -47,21 +47,27 @@ class TSP{
 	private:
 		int n; //number of vertices
 		int e; //number of edges
+		int min = 1000;
 		//adjacency list
 		Graph *adj_list;
 
 		//edge weight property map
 		EdgeWeightMap edge_weight_map;
+		vertex_pair vertex_set;
+		vector<int> best;
+		vector<int> cycle;
+		vector<mark_t> mrk;
 		//index map for vertices
 		IndexMap index_map;
 
 	public:
 		TSP(const string& fileName);
 		int getNeighbors() const;
-		void tsp() const;
-		stack<double> tsp_brute_force() const;
+		void tsp_brute();
+		void tsp_brute_forceR(vertex_des, vertex_des, int dist = 0);
 		double distance(vector<int>, int i = 0) const;
 		vector<int> nearest_neighbor_path() const;
+		void print_path(vector<int>);
 
 
 };
