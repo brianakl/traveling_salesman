@@ -1,10 +1,7 @@
 #include "TSP.hpp"
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
-#include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <iostream>
-#include <string>
 #include <map>
 #include <fstream>
 #include <utility>
@@ -104,8 +101,15 @@ TSP::TSP(const string& fileName){
 
 }
 
-
+//this function finds the shortest path by trying every possible path
 stack<double> TSP::tsp_brute_force() const{
+
+  
+
+
+
+
+  
   
   stack<double> p;
   edge_pair ep;
@@ -122,18 +126,94 @@ stack<double> TSP::tsp_brute_force() const{
   for (vp = vertices(*adj_list); vp.first != vp.second; vp.first++){
     cout << index_map[*vp.first];
     for (out_edge_pair out_i = out_edges(*vp.first, *adj_list); out_i.first != out_i.second; out_i.first++){
-      ed = *out_i.first;
-      vertex_des src = source(ed, *adj_list), targ = target(ed, *adj_list);
-      cout << " (" << index_map[src] << "," << index_map[targ] << ")" << edge_weight_map[*out_i.first] << " ";
+      vertex_des src = source(*out_i.first, *adj_list), 
+                targ = target(*out_i.first, *adj_list);
+      cout << " (" << index_map[src] << "," << index_map[targ] << ")" << 
+              edge_weight_map[*out_i.first] << " ";
     }
     cout << endl;
-
   }
 
   return p;
+  
 
 }
 
+//returns the total distance of a path
 double TSP::distance(stack<edge_pair> path) const{
   
+}
+
+//creates a path using the nearest unvisited neighbor as the next choice
+stack<int> TSP::nearest_neighbor_path() const{
+  stack<int> ret;
+  vertex_pair current = vertices(*adj_list), next;
+  out_edge_pair out_i = out_edges(*current.first, *adj_list), shortest_edge = out_i, q;
+  vertex_des closestTarg = target(*out_i.first, *adj_list),
+             closestS = source(*out_i.first, *adj_list),
+             temp;
+  bool visited[n];
+
+  for (int i =0; i <n ; i++)
+    visited[i] = false;
+  cout << endl;
+  
+  visited[0] = true;
+  for(int i = 0; i < n; i++){
+    out_i = out_edges(*current.first, *adj_list);
+    temp = source(*out_i.first, *adj_list);
+    q = out_i;
+
+    //shortest_edge needs to be set to the first available edge
+    //vertex it targets needs to not be visited
+    int g;
+    for(g = 0; visited[g];g++){
+
+    }
+    for(;index_map[temp] != g; q.first++){
+      temp = source(*q.first, *adj_list);
+    }
+    
+    shortest_edge = q;
+    //traversing through the out_edges to find one with a lower edge weight
+
+
+    closestTarg = target(*(shortest_edge.first), *adj_list);
+    closestS = source(*(shortest_edge.first), *adj_list);
+    cout << index_map[closestS] << endl;
+    for(;out_i.first != out_i.second; out_i.first++){
+      //if this node is unvisited and the distance between current node > closest node then continue
+      if (!visited[index_map[target(*out_i.first, *adj_list)]]) {
+        cout << "vertex: " << index_map[target(*out_i.first, *adj_list)] << endl;
+        if (edge_weight_map[*shortest_edge.first] > edge_weight_map(*out_i.first)){
+          closestTarg = target(*out_i.first, *adj_list);
+          closestS = source(*out_i.first, *adj_list);
+          shortest_edge = out_i;
+          cout << "ClosestTarg: " << index_map[closestTarg] << endl;
+        }
+      }      
+    }
+    visited[index_map[closestS]] = true;
+    ret.push(index_map[closestTarg]);
+    //search through the vertex list to find a vertex_des that matches closestTarg
+    next = vertices(*adj_list);
+    for (; next.first != next.second && *next.first != closestTarg; next.first++){
+
+    }
+
+    cout << "current.first : " << index_map[*current.first] << endl << "next.first: " << index_map[*next.first] << endl;
+    current.first = next.first;
+    //cout << "new current.first: " << index_map[*current.first] << endl << endl;
+    
+  }
+
+  for (int i = 0; i < n; i++){
+    cout << ret.top() << endl;
+    ret.pop();
+
+  }
+
+  return ret;
+  
+
 }

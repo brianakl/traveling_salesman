@@ -6,7 +6,6 @@
 #include <boost/property_map/property_map.hpp>
 #include <map>
 #include <iostream>
-#include <string>
 #include <utility>
 #include <stack>
 #include <vector>
@@ -52,14 +51,14 @@ class TSP{
 		//index map for vertices
 		IndexMap index_map;
 
-
-
 	public:
 		TSP(const string& fileName);
 		int getNeighbors() const;
 		void tsp() const;
 		stack<double> tsp_brute_force() const;
 		double distance(stack<edge_pair>) const;
+		stack<int> nearest_neighbor_path() const;
+
 
 };
 
