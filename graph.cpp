@@ -159,28 +159,27 @@ stack<int> TSP::nearest_neighbor_path() const{
   cout << endl;
   
   visited[0] = true;
-  for(int i = 0; i < n; i++){
+  ret.push(0);
+  for(int i = 0; i < n-1; i++){
     out_i = out_edges(*current.first, *adj_list);
     temp = source(*out_i.first, *adj_list);
-    q = out_i;
+    shortest_edge = out_i;
 
     //shortest_edge needs to be set to the first available edge
     //vertex it targets needs to not be visited
-    int g;
-    for(g = 0; visited[g];g++){
-
-    }
-    for(;index_map[temp] != g; q.first++){
-      temp = source(*q.first, *adj_list);
-    }
     
-    shortest_edge = q;
+    while (visited[index_map[target(*shortest_edge.first, *adj_list)]] && shortest_edge.first+1 != shortest_edge.second){
+      shortest_edge.first++;
+  //cout << "seg fault test" << endl;
+    }
+    //if (shortest_edge.first == shortest_edge.second) break;
+    
     //traversing through the out_edges to find one with a lower edge weight
 
 
     closestTarg = target(*(shortest_edge.first), *adj_list);
     closestS = source(*(shortest_edge.first), *adj_list);
-    cout << index_map[closestS] << endl;
+    cout << "ClosestS: " <<index_map[closestS] << " ClosestTarg: " << index_map[closestTarg] << endl;
     for(;out_i.first != out_i.second; out_i.first++){
       //if this node is unvisited and the distance between current node > closest node then continue
       if (!visited[index_map[target(*out_i.first, *adj_list)]]) {
@@ -200,12 +199,15 @@ stack<int> TSP::nearest_neighbor_path() const{
     for (; next.first != next.second && *next.first != closestTarg; next.first++){
 
     }
+    if (next.first == next.second)  break;
 
-    cout << "current.first : " << index_map[*current.first] << endl << "next.first: " << index_map[*next.first] << endl;
+    cout << "current.first : " << index_map[*current.first] << endl << "next.first: " <<  
+           index_map[*next.first] << endl << endl;
     current.first = next.first;
     //cout << "new current.first: " << index_map[*current.first] << endl << endl;
     
   }
+
 
   for (int i = 0; i < n; i++){
     cout << ret.top() << endl;
