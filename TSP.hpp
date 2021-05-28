@@ -8,13 +8,14 @@
 #include <iostream>
 #include <utility>
 #include <stack>
+#include <queue>
 #include <vector>
-
 
 using namespace std;
 using namespace boost;
 
 enum mark_t {UNVISITED, VISITED};
+
 //General Graph and Graph edge weight property
 typedef property<edge_weight_t, double> EdgeWeightProperty;
 typedef adjacency_list<vecS, vecS, undirectedS, no_property, EdgeWeightProperty> Graph;
@@ -56,8 +57,8 @@ class TSP{
 		int getNeighbors() const;
 		void tsp() const;
 		stack<double> tsp_brute_force() const;
-		double distance(stack<edge_pair>) const;
-		stack<int> nearest_neighbor_path() const;
+		double distance(queue<int>) const;
+		queue<int> nearest_neighbor_path() const;
 
 
 };

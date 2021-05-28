@@ -41,16 +41,15 @@ TSP::TSP(const string& fileName){
   }
 
 
+/*
 
   //how to access a vertex
   
-
-
   //get the property map for vertex indices
   //typedef property_map<Graph,vertex_index_t>::type IndexMap;
   this->index_map = get(vertex_index, *adj_list);
 
-  cout << "vertices(adj_list) = ";
+  //cout << "vertices(adj_list) = ";
   vertex_pair vp;
   vertex_des v;
   for (vp = vertices(*adj_list); vp.first != vp.second; vp.first++){
@@ -63,7 +62,7 @@ TSP::TSP(const string& fileName){
   
 
   //accessing edges
-  /*
+  
   cout << "edges(adj_list) = ";
   edge_iter ei, ei_end;
   for (tie(ei,ei_end) = edges(adj_list); ei != ei_end; ei++){
@@ -92,7 +91,7 @@ TSP::TSP(const string& fileName){
             index_map[target(*edg.first,*adj_list)] << ")" << edge_weight_map[*ep.first] <<
             " ";
   cout << endl;
-  */
+*/
 
 
 
@@ -104,12 +103,7 @@ TSP::TSP(const string& fileName){
 //this function finds the shortest path by trying every possible path
 stack<double> TSP::tsp_brute_force() const{
 
-  
 
-
-
-
-  
   
   stack<double> p;
   edge_pair ep;
@@ -140,13 +134,27 @@ stack<double> TSP::tsp_brute_force() const{
 }
 
 //returns the total distance of a path
-double TSP::distance(stack<edge_pair> path) const{
-  
+double TSP::distance(queue<int> path) const{
+  vertex_pair vp = vertices(*adj_list), dist;
+  out_edge_pair out_i;
+  double ret = 0;
+  //find the vertex that matches the first node of the path
+  while (index_map[*vp.first] != path.front() && vp.first+1 != vp.second){
+    vp.first++;
+  }
+  dist = vp;
+
+  out_i = out_edges(*dist.first, *adj_list);
+  //find where the target of edge = vp
+
+
+
+  return edge_weight_map[*out_i.first] + distance(path);
 }
 
 //creates a path using the nearest unvisited neighbor as the next choice
-stack<int> TSP::nearest_neighbor_path() const{
-  stack<int> ret;
+queue<int> TSP::nearest_neighbor_path() const{
+  queue<int> ret;
   vertex_pair current = vertices(*adj_list), next;
   out_edge_pair out_i = out_edges(*current.first, *adj_list), shortest_edge = out_i, q;
   vertex_des closestTarg = target(*out_i.first, *adj_list),
@@ -156,7 +164,7 @@ stack<int> TSP::nearest_neighbor_path() const{
 
   for (int i =0; i <n ; i++)
     visited[i] = false;
-  cout << endl;
+
   
   visited[0] = true;
   ret.push(0);
@@ -168,27 +176,25 @@ stack<int> TSP::nearest_neighbor_path() const{
     //shortest_edge needs to be set to the first available edge
     //vertex it targets needs to not be visited
     
-    while (visited[index_map[target(*shortest_edge.first, *adj_list)]] && shortest_edge.first+1 != shortest_edge.second){
+    while (visited[index_map[target(*shortest_edge.first, *adj_list)]] && shortest_edge.first+1 != shortest_edge.second)
       shortest_edge.first++;
-  //cout << "seg fault test" << endl;
-    }
-    //if (shortest_edge.first == shortest_edge.second) break;
+
     
     //traversing through the out_edges to find one with a lower edge weight
 
 
     closestTarg = target(*(shortest_edge.first), *adj_list);
     closestS = source(*(shortest_edge.first), *adj_list);
-    cout << "ClosestS: " <<index_map[closestS] << " ClosestTarg: " << index_map[closestTarg] << endl;
+    //cout << "ClosestS: " <<index_map[closestS] << " ClosestTarg: " << index_map[closestTarg] << endl;
     for(;out_i.first != out_i.second; out_i.first++){
       //if this node is unvisited and the distance between current node > closest node then continue
       if (!visited[index_map[target(*out_i.first, *adj_list)]]) {
-        cout << "vertex: " << index_map[target(*out_i.first, *adj_list)] << endl;
+        //cout << "vertex: " << index_map[target(*out_i.first, *adj_list)] << endl;
         if (edge_weight_map[*shortest_edge.first] > edge_weight_map(*out_i.first)){
           closestTarg = target(*out_i.first, *adj_list);
           closestS = source(*out_i.first, *adj_list);
           shortest_edge = out_i;
-          cout << "ClosestTarg: " << index_map[closestTarg] << endl;
+          //cout << "ClosestTarg: " << index_map[closestTarg] << endl;
         }
       }      
     }
@@ -201,19 +207,12 @@ stack<int> TSP::nearest_neighbor_path() const{
     }
     if (next.first == next.second)  break;
 
-    cout << "current.first : " << index_map[*current.first] << endl << "next.first: " <<  
-           index_map[*next.first] << endl << endl;
+    //cout << "current.first : " << index_map[*current.first] << endl << "next.first: " << index_map[*next.first] << endl << endl;
     current.first = next.first;
     //cout << "new current.first: " << index_map[*current.first] << endl << endl;
     
   }
 
-
-  for (int i = 0; i < n; i++){
-    cout << ret.top() << endl;
-    ret.pop();
-
-  }
 
   return ret;
   
