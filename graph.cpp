@@ -115,7 +115,6 @@ stack<double> TSP::tsp_brute_force() const{
   cout << endl;
 
   vertex_pair vp;
-  out_edge_iter out_end;
   edge_des ed;
   for (vp = vertices(*adj_list); vp.first != vp.second; vp.first++){
     cout << index_map[*vp.first];
@@ -133,28 +132,37 @@ stack<double> TSP::tsp_brute_force() const{
 
 }
 
-//returns the total distance of a path
-double TSP::distance(queue<int> path) const{
+//recursively returns the total distance of a path
+double TSP::distance(vector<int> path, int i) const{
   vertex_pair vp = vertices(*adj_list), dist;
   out_edge_pair out_i;
   double ret = 0;
-  //find the vertex that matches the first node of the path
-  while (index_map[*vp.first] != path.front() && vp.first+1 != vp.second){
-    vp.first++;
+
+  //if the current vertex is the last vertex in the vector the the edge
+  //weight between the first and last need to be returned
+  if (path[i+1] == *path.end()){
+    //1) find coressponding out edges
+    out_i = out_edges(index_map[path[0]], *adj_list);
+
+    //edge_weight_map need an out edge iterator
+
+    //find where target(out_p.first) == index_map[path[i]]
+    for (;out_i.first != out_i.second; out_i.first++){
+      if (target(*out_i.first, *adj_list) == index_map[path[i]]) break;
+    }
+    return edge_weight_map[*out_i.first];
+
   }
-  dist = vp;
-
-  out_i = out_edges(*dist.first, *adj_list);
-  //find where the target of edge = vp
-
-
-
-  return edge_weight_map[*out_i.first] + distance(path);
+  for (out_i = out_edges(index_map[path[i]], *adj_list); out_i.first != out_i.second; out_i.first++){
+    if (target(*out_i.first, *adj_list) == index_map[path[i+1]]) break;
+  }
+  
+  return edge_weight_map[*out_i.first] + distance(path, ++i);
 }
 
 //creates a path using the nearest unvisited neighbor as the next choice
-queue<int> TSP::nearest_neighbor_path() const{
-  queue<int> ret;
+vector<int> TSP::nearest_neighbor_path() const{
+  vector<int> ret;
   vertex_pair current = vertices(*adj_list), next;
   out_edge_pair out_i = out_edges(*current.first, *adj_list), shortest_edge = out_i, q;
   vertex_des closestTarg = target(*out_i.first, *adj_list),
@@ -167,7 +175,7 @@ queue<int> TSP::nearest_neighbor_path() const{
 
   
   visited[0] = true;
-  ret.push(0);
+  ret.push_back(0);
   for(int i = 0; i < n-1; i++){
     out_i = out_edges(*current.first, *adj_list);
     temp = source(*out_i.first, *adj_list);
@@ -199,7 +207,7 @@ queue<int> TSP::nearest_neighbor_path() const{
       }      
     }
     visited[index_map[closestS]] = true;
-    ret.push(index_map[closestTarg]);
+    ret.push_back(index_map[closestTarg]);
     //search through the vertex list to find a vertex_des that matches closestTarg
     next = vertices(*adj_list);
     for (; next.first != next.second && *next.first != closestTarg; next.first++){

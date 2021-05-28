@@ -18,6 +18,7 @@ enum mark_t {UNVISITED, VISITED};
 
 //General Graph and Graph edge weight property
 typedef property<edge_weight_t, double> EdgeWeightProperty;
+//typedef property<vertex_color_t, default_color_type> VertexColorProperty;
 typedef adjacency_list<vecS, vecS, undirectedS, no_property, EdgeWeightProperty> Graph;
 
 //Edge typedefs
@@ -33,6 +34,8 @@ typedef pair<vertex_iter, vertex_iter> vertex_pair;
 //property maps
 typedef property_map<Graph, vertex_index_t>::type IndexMap;
 typedef property_map<Graph, edge_weight_t>::type EdgeWeightMap;
+//typedef property_map<Graph, edge_index_t>::type EdgeMap;
+//typedef property_map<Graph, vertex_color_t>::type ColorMap;
 
 //out edge iterator
 typedef graph_traits<Graph>::out_edge_iterator out_edge_iter;
@@ -57,8 +60,8 @@ class TSP{
 		int getNeighbors() const;
 		void tsp() const;
 		stack<double> tsp_brute_force() const;
-		double distance(queue<int>) const;
-		queue<int> nearest_neighbor_path() const;
+		double distance(vector<int>, int i = 0) const;
+		vector<int> nearest_neighbor_path() const;
 
 
 };
