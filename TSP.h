@@ -47,7 +47,7 @@ class TSP{
 	private:
 		int n; //number of vertices
 		int e; //number of edges
-		int min = 1000;
+		int min;
 		//adjacency list
 		Graph *adj_list;
 

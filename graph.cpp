@@ -47,6 +47,7 @@ TSP::TSP(const string& fileName){
   }
 
   ifile.close();
+  min = 1000000;
 
 
 }
