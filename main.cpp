@@ -12,12 +12,12 @@ int main(){
 	double d = tsp.distance(test);
 
 	cout << "Nearest Neighbor cycle: ";
-	for (int i=0; i < 8; i++){
+	for (int i=0; i < tsp.get_vertices(); i++){
 		cout << test[i] << " ";
 
 	}
 
-	cout << endl << "Distance: " << d << endl;
+	cout << endl << "Distance: " << d << endl << endl;
 
 	tsp.tsp_brute();
 

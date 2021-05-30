@@ -34,7 +34,8 @@ TSP::TSP(const string& fileName){
   //adds an edge between vertex i and j of weight matrix[i][j] to the graph
   EdgeWeightProperty ewp;
   for (int i = 1; i < this->n; i++){
-    for (int j = 0; matrix[i][j] != 0.0; j++){
+    for (int j = 0; j < i ; j++){
+      if (matrix[i][j] == 0) continue;
       ewp = matrix[i][j];
       add_edge(i,j, ewp, *adj_list); 
     }

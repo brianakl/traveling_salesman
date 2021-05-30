@@ -68,6 +68,8 @@ class TSP{
 		double distance(vector<int>, int i = 0) const;
 		vector<int> nearest_neighbor_path() const;
 		void print_path(vector<int>);
+		int get_vertices(){return n;};
+		
 
 
 };
