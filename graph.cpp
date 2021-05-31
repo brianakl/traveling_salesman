@@ -5,6 +5,7 @@
 #include <map>
 #include <fstream>
 #include <utility>
+#include <queue>
 #include <vector>
 
 using namespace std;
@@ -58,7 +59,7 @@ void TSP::tsp_brute(){
 }
 
 //this function finds the shortest path by trying every possible path
-void TSP::tsp_brute_forceR(vertex_des v, vertex_des start, int dist){
+void TSP::tsp_brute_forceR(vertex_des v, vertex_des start, double dist){
   cycle.push_back(index_map[v]);
   mrk[index_map[v]] = VISITED;
   bool atEnd = true;
@@ -169,9 +170,12 @@ vector<int> TSP::nearest_neighbor_path() const{
 
     
   }
-
-
   return ret;
   
+}
+
+vector<edge_des> TSP::kruskal_MST(){
+  //creating a min heap
+  priority_queue<double, vector<double>, greater<double>> pq;
 
 }
