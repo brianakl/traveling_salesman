@@ -1,6 +1,7 @@
 #include "TSP.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
+#include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <iostream>
 #include <map>
 #include <fstream>
@@ -154,7 +155,6 @@ vector<int> TSP::nearest_neighbor_path() const{
   for (int i =0; i <n ; i++)
     visited[i] = false;
 
-  
   visited[0] = true;
   ret.push_back(0);
   for(int i = 0; i < n-1; i++){
@@ -167,10 +167,7 @@ vector<int> TSP::nearest_neighbor_path() const{
     for (;shortest_edge.first+1 != shortest_edge.second; shortest_edge.first++){
       if (!visited[index_map[target(*shortest_edge.first, *adj_list)]]) break;
     }
-
     //traversing through the out_edges to find one with a lower edge weight
-
-
     closestTarg = target(*(shortest_edge.first), *adj_list);
 
     for(;out_i.first != out_i.second; out_i.first++){
@@ -197,8 +194,10 @@ vector<int> TSP::nearest_neighbor_path() const{
   
 }
 
-vector<edge_des> TSP::kruskal_MST(){
-  //creating a min heap
-  priority_queue<double, vector<double>, greater<double> > pq;
+
+vector<int> TSP::christofides(){
+  //create minimum spanning tree
+  vector<edge_des> spanning_tree;
+  kruskal_minimum_spanning_tree(*adj_list, back_inserter(spanning_tree));
 
 }

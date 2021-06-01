@@ -70,7 +70,7 @@ class TSP{
 		vector<int> nearest_neighbor_path() const;
 		void print_path(vector<int>);
 		int get_vertices(){return n;};
-		vector<edge_des> kruskal_MST();
+		vector<int> christofides();
 
 
 };

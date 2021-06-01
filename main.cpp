@@ -19,6 +19,7 @@ int main(){
 	cout << endl << "Distance: " << d << endl << endl;
 
 	tsp.tsp_brute();
+	tsp.kruskal_MST();
 
 
 
