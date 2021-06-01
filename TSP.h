@@ -15,6 +15,7 @@ using namespace std;
 using namespace boost;
 
 enum mark_t {UNVISITED, VISITED, START};
+enum input_type{DIST_MATRIX, COORDINATES};
 
 //General Graph and Graph edge weight property
 typedef property<edge_weight_t, double> EdgeWeightProperty;
@@ -61,15 +62,15 @@ class TSP{
 		IndexMap index_map;
 
 	public:
-		TSP(const string& fileName);
+		TSP(const string& fileName, input_type);
 		int getNeighbors() const;
 		void tsp_brute();
-		void tsp_brute_forceR(vertex_des, vertex_des, int dist = 0);
+		void tsp_brute_forceR(vertex_des, vertex_des, double dist = 0);
 		double distance(vector<int>, int i = 0) const;
 		vector<int> nearest_neighbor_path() const;
 		void print_path(vector<int>);
 		int get_vertices(){return n;};
-		
+		vector<int> christofides();
 
 
 };

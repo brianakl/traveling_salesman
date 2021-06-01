@@ -1,16 +1,18 @@
 #include "TSP.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
+#include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <iostream>
 #include <map>
 #include <fstream>
 #include <utility>
+#include <queue>
 #include <vector>
 
 using namespace std;
 using namespace boost;
 
-TSP::TSP(const string& fileName){
+TSP::TSP(const string& fileName, input_type type){
   ifstream ifile;
   ifile.open(fileName);
   if (!ifile){
@@ -22,26 +24,52 @@ TSP::TSP(const string& fileName){
   ifile >> this->e;
 
   adj_list = new Graph(n);
-  double matrix [this->n][this->n];
 
-  for(int i = 0; i < this->n; i++){
-    for(int j = 0; j < this->n; j++){
-      ifile >> matrix[i][j];
+  if (type == DIST_MATRIX){
+    double matrix [this->n][this->n];
+
+    for(int i = 0; i < this->n; i++){
+      for(int j = 0; j < this->n; j++){
+        ifile >> matrix[i][j];
+      }
     }
-  }
-
-  //add edges with weights
-  //adds an edge between vertex i and j of weight matrix[i][j] to the graph
-  EdgeWeightProperty ewp;
-  for (int i = 1; i < this->n; i++){
-    for (int j = 0; j < i ; j++){
-      if (matrix[i][j] == 0) continue;
-      ewp = matrix[i][j];
-      add_edge(i,j, ewp, *adj_list); 
+    //add edges with weights
+    //adds an edge between vertex i and j of weight matrix[i][j] to the graph
+    EdgeWeightProperty ewp;
+    for (int i = 1; i < this->n; i++){
+      for (int j = 0; j < i ; j++){
+        if (matrix[i][j] == 0) continue;
+        ewp = matrix[i][j];
+        add_edge(i,j, ewp, *adj_list); 
+      }
     }
+
+
+  } else if (type == COORDINATES){
+    double f = 0, s = 0;
+    vector<pair<double, double> > coords;
+    for (int i = 0; i < n; i++){
+      ifile >> f >> s;
+      coords.push_back(make_pair(f,s));
+    }
+    //add edges
+    EdgeWeightProperty ewp;
+    double x1,x2,y1,y2;
+    x1 = x2 = y1 = y2 = 0.0;
+    //calculates the edge weights for a graph that is euclidean 
+    for (int i = 1; i < n; i++){
+      for (int j = 0; j < n; j++){
+        if (i == j) continue;
+        x1 = coords[i].first;
+        y1 = coords[i].second;
+        x2 = coords[j].first;
+        y2 = coords[j].second;
+        ewp = sqrt(pow(abs(x2-x1),2) + pow(abs(y2-y1),2));
+        add_edge(i,j,ewp,*adj_list);
+      }
+    }
+
   }
-
-
   vertex_set = vertices(*adj_list);
   for (int i = 0; i < n; i++){
     mrk.push_back(UNVISITED);
@@ -58,7 +86,7 @@ void TSP::tsp_brute(){
 }
 
 //this function finds the shortest path by trying every possible path
-void TSP::tsp_brute_forceR(vertex_des v, vertex_des start, int dist){
+void TSP::tsp_brute_forceR(vertex_des v, vertex_des start, double dist){
   cycle.push_back(index_map[v]);
   mrk[index_map[v]] = VISITED;
   bool atEnd = true;
@@ -127,7 +155,6 @@ vector<int> TSP::nearest_neighbor_path() const{
   for (int i =0; i <n ; i++)
     visited[i] = false;
 
-  
   visited[0] = true;
   ret.push_back(0);
   for(int i = 0; i < n-1; i++){
@@ -140,10 +167,7 @@ vector<int> TSP::nearest_neighbor_path() const{
     for (;shortest_edge.first+1 != shortest_edge.second; shortest_edge.first++){
       if (!visited[index_map[target(*shortest_edge.first, *adj_list)]]) break;
     }
-
     //traversing through the out_edges to find one with a lower edge weight
-
-
     closestTarg = target(*(shortest_edge.first), *adj_list);
 
     for(;out_i.first != out_i.second; out_i.first++){
@@ -164,14 +188,16 @@ vector<int> TSP::nearest_neighbor_path() const{
       if (*next.first == closestTarg) break;
     }
     if (next.first == next.second)  break;
-
     current.first = next.first;
-
-    
   }
-
-
   return ret;
   
+}
+
+
+vector<int> TSP::christofides(){
+  //create minimum spanning tree
+  vector<edge_des> spanning_tree;
+  kruskal_minimum_spanning_tree(*adj_list, back_inserter(spanning_tree));
 
 }

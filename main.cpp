@@ -6,8 +6,7 @@ using namespace std;
 
 int main(){
 
-	TSP tsp("test_distance_matrix.txt");
-	//stack<double> d = tsp.tsp_brute_force();
+	TSP tsp("tsp_coordinates.txt", COORDINATES);
 	vector<int> test = tsp.nearest_neighbor_path();
 	double d = tsp.distance(test);
 
@@ -20,6 +19,7 @@ int main(){
 	cout << endl << "Distance: " << d << endl << endl;
 
 	tsp.tsp_brute();
+	tsp.kruskal_MST();
 
 
 
