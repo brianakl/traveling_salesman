@@ -11,7 +11,7 @@
 using namespace std;
 using namespace boost;
 
-TSP::TSP(const string& fileName){
+TSP::TSP(const string& fileName, input_type type){
   ifstream ifile;
   ifile.open(fileName);
   if (!ifile){
@@ -23,26 +23,52 @@ TSP::TSP(const string& fileName){
   ifile >> this->e;
 
   adj_list = new Graph(n);
-  double matrix [this->n][this->n];
 
-  for(int i = 0; i < this->n; i++){
-    for(int j = 0; j < this->n; j++){
-      ifile >> matrix[i][j];
+  if (type == DIST_MATRIX){
+    double matrix [this->n][this->n];
+
+    for(int i = 0; i < this->n; i++){
+      for(int j = 0; j < this->n; j++){
+        ifile >> matrix[i][j];
+      }
     }
-  }
-
-  //add edges with weights
-  //adds an edge between vertex i and j of weight matrix[i][j] to the graph
-  EdgeWeightProperty ewp;
-  for (int i = 1; i < this->n; i++){
-    for (int j = 0; j < i ; j++){
-      if (matrix[i][j] == 0) continue;
-      ewp = matrix[i][j];
-      add_edge(i,j, ewp, *adj_list); 
+    //add edges with weights
+    //adds an edge between vertex i and j of weight matrix[i][j] to the graph
+    EdgeWeightProperty ewp;
+    for (int i = 1; i < this->n; i++){
+      for (int j = 0; j < i ; j++){
+        if (matrix[i][j] == 0) continue;
+        ewp = matrix[i][j];
+        add_edge(i,j, ewp, *adj_list); 
+      }
     }
+
+
+  } else if (type == COORDINATES){
+    double f = 0, s = 0;
+    vector<pair<double, double> > coords;
+    for (int i = 0; i < n; i++){
+      ifile >> f >> s;
+      coords.push_back(make_pair(f,s));
+    }
+    //add edges
+    EdgeWeightProperty ewp;
+    double x1,x2,y1,y2;
+    x1 = x2 = y1 = y2 = 0.0;
+    //calculates the edge weights for a graph that is euclidean 
+    for (int i = 1; i < n; i++){
+      for (int j = 0; j < n; j++){
+        if (i == j) continue;
+        x1 = coords[i].first;
+        y1 = coords[i].second;
+        x2 = coords[j].first;
+        y2 = coords[j].second;
+        ewp = sqrt(pow(abs(x2-x1),2) + pow(abs(y2-y1),2));
+        add_edge(i,j,ewp,*adj_list);
+      }
+    }
+
   }
-
-
   vertex_set = vertices(*adj_list);
   for (int i = 0; i < n; i++){
     mrk.push_back(UNVISITED);
@@ -165,10 +191,7 @@ vector<int> TSP::nearest_neighbor_path() const{
       if (*next.first == closestTarg) break;
     }
     if (next.first == next.second)  break;
-
     current.first = next.first;
-
-    
   }
   return ret;
   
@@ -176,6 +199,6 @@ vector<int> TSP::nearest_neighbor_path() const{
 
 vector<edge_des> TSP::kruskal_MST(){
   //creating a min heap
-  priority_queue<double, vector<double>, greater<double>> pq;
+  priority_queue<double, vector<double>, greater<double> > pq;
 
 }
