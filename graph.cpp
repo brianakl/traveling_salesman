@@ -227,16 +227,17 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
   //pick a vertex and find a matching of minimum weight
   vector<edge_des> ret;
 
-  function<bool(edge_des,edge_des)> compare;
-  compare = [=](edge_des u, edge_des v) { return edge_weight_map[u] < edge_weight_map[v]; };
-  priority_queue <edge_des, vector<edge_des>, decltype(compare)> pq(compare);
+  std::function<bool(edge_des,edge_des)> comp = [this](edge_des u, edge_des v) -> bool { 
+    return edge_weight_map[u] < edge_weight_map[v];
+    };
+  priority_queue <edge_des, vector<edge_des>, decltype(comp)> pq(comp);
 
   //adding every edge to the pq
   for(int i = 0; i < odd; i++){
     for (int j = i + 1; j < odd; j++)
       pq.push(int_to_edge(verts[i],verts[j]));
   }
-  cout << "pq test: " << edge_weight_map[pq.top()] << endl;
+  
   
   
 }

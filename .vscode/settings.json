@@ -3,6 +3,7 @@
         "iostream": "cpp",
         "utility": "cpp",
         "vector": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "functional": "cpp"
     }
 }
