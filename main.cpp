@@ -32,6 +32,8 @@ int main(){
 
     cout << s_int.count() << "s\n";
     cout << ms_double.count() << "ms\n";
+
+	vector<edge_des> sdf = tsp.min_perfect_matching(test,5);
 	
 
 
