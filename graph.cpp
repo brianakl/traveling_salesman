@@ -8,6 +8,7 @@
 #include <utility>
 #include <queue>
 #include <vector>
+#include <chrono>
 
 using namespace std;
 using namespace boost;
@@ -199,5 +200,29 @@ vector<int> TSP::christofides(){
   //create minimum spanning tree
   vector<edge_des> spanning_tree;
   kruskal_minimum_spanning_tree(*adj_list, back_inserter(spanning_tree));
+  //calculate vertices with odd degree
+  vector<int> visit(n,0);
+  vector<int> odd_vert;
+  for (int i =0 ; i < n-1;i++){
+    visit[spanning_tree[i].m_source]++;
+    visit[spanning_tree[i].m_target]++;
+  }
+  int odd = 0;
+  for(int i =0; i < n; i++){
+    if(visit[i] %2 == 0) continue;
+    odd_vert.push_back(visit[i]);
+    odd++;
+  }
+  //find minimum weight perfect matching
+  vector<pair<int,int> > perfect_match = min_perfect_matching(odd_vert);
 
+
+}
+
+vector<pair<int,int> > TSP::min_perfect_matching(vector<int> verts){
+  //create a matching 
+  //pick a vertex and find a matching of minimum weight
+  vector<pair<int,int> > ret;
+  
+  
 }

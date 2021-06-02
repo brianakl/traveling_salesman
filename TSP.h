@@ -71,6 +71,7 @@ class TSP{
 		void print_path(vector<int>);
 		int get_vertices(){return n;};
 		vector<int> christofides();
+		vector<pair<int,int> > min_perfect_matching(vector<int>);
 
 
 };
