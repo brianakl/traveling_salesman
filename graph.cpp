@@ -198,7 +198,6 @@ vector<int> TSP::nearest_neighbor_path() const{
 
 vector<int> TSP::christofides(){
   //create minimum spanning tree
-  cout << "hest" <<endl;
   vector<edge_des> spanning_tree;
   kruskal_minimum_spanning_tree(*adj_list, back_inserter(spanning_tree));
   //calculate vertices with odd degree
@@ -222,14 +221,18 @@ vector<int> TSP::christofides(){
 
 }
 
+
 vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
   //create a matching 
   //pick a vertex and find a matching of minimum weight
+  cout << "test" ;
   vector<edge_des> ret;
 
-  std::function<bool(edge_des,edge_des)> comp = [this](edge_des u, edge_des v) -> bool { 
+
+  std::function<bool(edge_des,edge_des)> comp = [this](edge_des u, edge_des v){ 
     return edge_weight_map[u] < edge_weight_map[v];
     };
+
   priority_queue <edge_des, vector<edge_des>, decltype(comp)> pq(comp);
 
   //adding every edge to the pq
@@ -237,6 +240,23 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
     for (int j = i + 1; j < odd; j++)
       pq.push(int_to_edge(verts[i],verts[j]));
   }
+  //find the minimum edges till all vertices are perfect matched
+  bool used[odd];
+  for (int i = 0; i < odd; i++)
+    used[i] = false;
+
+  edge_des ed;
+  for(int i = 0; pq.empty(); i++){
+    ed = pq.top();
+    if (used[ed.m_source] == true || used[ed.m_target] == true) {
+      pq.pop();
+      continue;
+    }
+    used[ed.m_source] = true;
+    used[ed.m_target] = true;
+    pq.pop();
+  }
+  
   
   
   
