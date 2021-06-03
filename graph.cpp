@@ -254,11 +254,11 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
     }
     used[ed.m_source] = true;
     used[ed.m_target] = true;
+    ret.push_back(ed);
     pq.pop();
+    
   }
-  
-  
-  
+  return ret;  
   
 }
 
