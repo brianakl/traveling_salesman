@@ -13,6 +13,9 @@
 using namespace std;
 using namespace boost;
 
+//constructor
+//takes a file name and input type
+//input type can be a list of coordinates or a distance matrix
 TSP::TSP(const string& fileName, input_type type){
   ifstream ifile;
   ifile.open(fileName);
@@ -45,7 +48,6 @@ TSP::TSP(const string& fileName, input_type type){
       }
     }
 
-
   } else if (type == COORDINATES){
     double f = 0, s = 0;
     vector<pair<double, double> > coords;
@@ -71,6 +73,7 @@ TSP::TSP(const string& fileName, input_type type){
     }
 
   }
+
   vertex_set = vertices(*adj_list);
   for (int i = 0; i < n; i++){
     mrk.push_back(UNVISITED);
@@ -86,7 +89,7 @@ void TSP::tsp_brute(){
   print_path(best);
 }
 
-//this function finds the shortest path by trying every possible path
+//this function finds the shortest path by trying every possible path recursively
 void TSP::tsp_brute_forceR(vertex_des v, vertex_des start, double dist){
   cycle.push_back(index_map[v]);
   mrk[index_map[v]] = VISITED;
