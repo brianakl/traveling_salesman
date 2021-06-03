@@ -204,6 +204,12 @@ vector<int> TSP::christofides(){
   vector<edge_des> spanning_tree;
   kruskal_minimum_spanning_tree(*adj_list, back_inserter(spanning_tree));
   //calculate vertices with odd degree
+
+  for (auto it : spanning_tree)
+    cout << "("<< index_map[it.m_source] << "," << index_map[it.m_target] << ")" << edge_weight_map[it] << " ";
+
+  cout <<endl;
+
   vector<int> visit(n,0);
   vector<int> odd_vert;
   for (int i =0 ; i < n-1;i++){
@@ -216,9 +222,27 @@ vector<int> TSP::christofides(){
     odd_vert.push_back(visit[i]);
     odd++;
   }
-  //find minimum weight perfect matching
+  
+  //find minimum weight perfect matching (MPM)
   vector<edge_des> perfect_match = min_perfect_matching(odd_vert,odd);
 
+  //add the edges of the MPM to the MST
+  while(!perfect_match.empty()){
+    spanning_tree.push_back(perfect_match.back());
+    perfect_match.pop_back();
+  }
+
+  //calculate a euler tour
+  //pick a vertex and using the MST + MPM pick out an edge to travel to 
+  //store the order the vertices that are visited in
+  //make sure that if the next edge being traveled to is the starting edge
+  //that there arent any other edges to travel to first
+  vector<int> euler_t = euler_tour(spanning_tree);
+
+
+  //remove duplicate vertices and return the solution
+
+  
   return odd_vert;
 
 
@@ -232,7 +256,7 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
   vector<edge_des> ret;
 
 
-  std::function<bool(edge_des,edge_des)> comp = [this](edge_des u, edge_des v){ 
+  std::function<bool(edge_des,edge_des)> comp = [this](edge_des u, edge_des v)-> bool{ 
     return edge_weight_map[u] < edge_weight_map[v];
     };
 
@@ -249,7 +273,7 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
     used[i] = false;
 
   edge_des ed;
-  for(int i = 0; pq.empty(); i++){
+  for(int i = 0; !pq.empty(); i++){
     ed = pq.top();
     if (used[ed.m_source] == true || used[ed.m_target] == true) {
       pq.pop();
@@ -264,6 +288,11 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
   return ret;  
   
 }
+
+vector<int> TSP::euler_tour(vector<edge_des> tree){
+
+}
+
 
 edge_des TSP::int_to_edge(int v, int u){
   out_edge_pair out_p = out_edges(index_map[v], *adj_list);

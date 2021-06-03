@@ -73,6 +73,7 @@ class TSP{
 		vector<int> christofides();
 		vector<edge_des> min_perfect_matching(vector<int>,int);
 		edge_des int_to_edge(int,int);
+		vector<int> euler_tour(vector<edge_des>);
 
 
 };
