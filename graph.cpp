@@ -206,7 +206,7 @@ vector<int> TSP::christofides(){
   //calculate vertices with odd degree
 
   for (auto it : spanning_tree)
-    cout << "("<< index_map[it.m_source] << "," << index_map[it.m_target] << ")" << edge_weight_map[it] << " ";
+    cout << it.get_property() << edge_weight_map[it] << " ";
 
   cout <<endl;
 
@@ -256,8 +256,8 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
   vector<edge_des> ret;
 
 
-  std::function<bool(edge_des,edge_des)> comp = [this](edge_des u, edge_des v)-> bool{ 
-    return edge_weight_map[u] < edge_weight_map[v];
+  std::function<bool(edge_des,edge_des)> comp = [](edge_des u, edge_des v)-> bool{ 
+    return u.m_eproperty < v.m_eproperty;
     };
 
   priority_queue <edge_des, vector<edge_des>, decltype(comp)> pq(comp);
@@ -290,7 +290,21 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
 }
 
 vector<int> TSP::euler_tour(vector<edge_des> tree){
+  vector<int> ret;
+  int current = tree.back().m_source, next = 0, start = current;
+  while(!tree.empty()){
+    //find all edges of the current vertex
+    //so long as the next vertex is not the start pick another edge
+    vector<edge_des> degree;
+    //current ;
+    for(auto it : tree){
+      if(it.m_target == current || it.m_target == current)
+        degree.push_back(it);
+    }
 
+    
+
+  }
 }
 
 
