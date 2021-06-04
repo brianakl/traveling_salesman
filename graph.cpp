@@ -9,6 +9,7 @@
 #include <queue>
 #include <vector>
 #include <chrono>
+#include <unordered_map>
 
 using namespace std;
 using namespace boost;
@@ -205,6 +206,7 @@ vector<int> TSP::christofides(){
   kruskal_minimum_spanning_tree(*adj_list, back_inserter(spanning_tree));
   //calculate vertices with odd degree
 
+  cout << "MST: ";
   for (auto it : spanning_tree)
     cout << it.get_property() << edge_weight_map[it] << " ";
 
@@ -237,13 +239,23 @@ vector<int> TSP::christofides(){
   //store the order the vertices that are visited in
   //make sure that if the next edge being traveled to is the starting edge
   //that there arent any other edges to travel to first
-  vector<int> euler_t = euler_tour(spanning_tree);
+  vector<int> euler_t = hierholzer_euler_tour(spanning_tree, spanning_tree.back().m_source, spanning_tree.back().m_source);
 
 
   //remove duplicate vertices and return the solution
+  vector<int> ret;
+  bool duplicates[n];
+  for (int i =0; i < n; i++) duplicates[i] = false;
 
-  
-  return odd_vert;
+  for (auto it : euler_t){
+    if (duplicates[it])
+      continue;
+    ret.push_back(it);
+  }
+
+  distance(ret);
+  print_path(ret);
+  return ret;
 
 
 }
@@ -256,7 +268,7 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
   vector<edge_des> ret;
 
 
-  std::function<bool(edge_des,edge_des)> comp = [](edge_des u, edge_des v)-> bool{ 
+  std::function< bool(edge_des,edge_des) > comp = [](edge_des u, edge_des v){ 
     return u.m_eproperty < v.m_eproperty;
     };
 
@@ -289,22 +301,39 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
   
 }
 
-vector<int> TSP::euler_tour(vector<edge_des> tree){
+//hierholzers algorithm
+vector<int> TSP::hierholzer_euler_tour(vector<edge_des> tree, int start, int current){
+  
   vector<int> ret;
-  int current = tree.back().m_source, next = 0, start = current;
-  while(!tree.empty()){
-    //find all edges of the current vertex
-    //so long as the next vertex is not the start pick another edge
-    vector<edge_des> degree;
-    //current ;
-    for(auto it : tree){
-      if(it.m_target == current || it.m_target == current)
-        degree.push_back(it);
-    }
-
-    
-
+  //end case
+  if (tree.empty()){
+    ret.push_back(start);
+    return ret;
   }
+  
+  int next = 0, ne = 0;
+  vector<edge_des> degree;
+  //gets the degree of the current vertex
+  for(auto it : tree){
+    if(it.m_target == current || it.m_target == current)
+      degree.push_back(it);
+  }
+  //make sure that the next vertex isnt current
+
+  if(degree.back().m_source == current) next = degree.back().m_target;
+  else next = degree.back().m_source;
+  //find next in tree and remove it
+  int i =0;
+  for (auto it:tree){
+    i++;
+    if (it == degree.back()) break;
+  }
+  tree.erase(tree.begin() + i);
+  
+  ret.push_back(current);
+  vector<int> rec = hierholzer_euler_tour(tree,start, next);
+  ret.insert(ret.end(),rec.begin(),rec.end());
+  return ret;
 }
 
 
