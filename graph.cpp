@@ -68,7 +68,7 @@ TSP::TSP(const string& fileName, input_type type){
         y1 = coords[i].second;
         x2 = coords[j].first;
         y2 = coords[j].second;
-        ewp = sqrt(pow(abs(x2-x1),2) + pow(abs(y2-y1),2));
+        ewp = sqrt(pow(x2-x1,2) + pow(y2-y1,2));
         add_edge(i,j,ewp,*adj_list);
       }
     }
@@ -268,7 +268,7 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
   vector<edge_des> ret;
 
 
-  std::function< bool(edge_des,edge_des) > comp = [](edge_des u, edge_des v){ 
+  std::function<bool(edge_des,edge_des)> comp = [](edge_des u, edge_des v){ 
     return u.m_eproperty < v.m_eproperty;
     };
 
