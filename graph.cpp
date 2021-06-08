@@ -208,7 +208,7 @@ vector<int> TSP::christofides(){
 
   cout << "MST: ";
   for (auto it : spanning_tree)
-    cout << it.get_property() << edge_weight_map[it] << " ";
+    cout << it << edge_weight_map[it] << " ";
 
   cout <<endl;
 
@@ -225,13 +225,16 @@ vector<int> TSP::christofides(){
     odd++;
   }
   
+  
   //find minimum weight perfect matching (MPM)
-  vector<edge_des> perfect_match = min_perfect_matching(odd_vert,odd);
-
+  vector<edge_des>* perfect_match;
+  cout << "seg" << endl;
+  //*perfect_match = min_perfect_matching(&odd_vert,odd);
+  perfect_match = min_perfect_matching(&odd_vert, odd);
   //add the edges of the MPM to the MST
-  while(!perfect_match.empty()){
-    spanning_tree.push_back(perfect_match.back());
-    perfect_match.pop_back();
+  while(!perfect_match->empty()){
+    spanning_tree.push_back(perfect_match->back());
+    perfect_match->pop_back();
   }
 
   //calculate a euler tour
@@ -261,14 +264,14 @@ vector<int> TSP::christofides(){
 }
 
 
-vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
+vector<edge_des>* TSP::min_perfect_matching(vector<int>* verts, int odd){
   //create a matching 
   //pick a vertex and find a matching of minimum weight
   cout << "test" ;
   vector<edge_des> ret;
 
 
-  std::function<bool(edge_des,edge_des)> comp = [](edge_des u, edge_des v){ 
+  auto comp = [](edge_des u, edge_des v){ 
     return u.m_eproperty < v.m_eproperty;
     };
 
@@ -277,7 +280,7 @@ vector<edge_des> TSP::min_perfect_matching(vector<int> verts, int odd){
   //adding every edge to the pq
   for(int i = 0; i < odd; i++){
     for (int j = i + 1; j < odd; j++)
-      pq.push(int_to_edge(verts[i],verts[j]));
+      pq.push(int_to_edge(verts->at(i),verts->at(j)));
   }
   //find the minimum edges till all vertices are perfect matched
   bool used[odd];
@@ -341,4 +344,6 @@ edge_des TSP::int_to_edge(int v, int u){
   out_edge_pair out_p = out_edges(index_map[v], *adj_list);
   for (;out_p.first != out_p.second; out_p.first++)
     if(target(*out_p.first, *adj_list) == index_map[u]) return *out_p.first;
+  
+  return *out_p.second;
 }
