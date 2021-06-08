@@ -73,7 +73,8 @@ class TSP{
 		vector<int> christofides();
 		vector<edge_des>* min_perfect_matching(vector<int>*,int);
 		edge_des int_to_edge(int,int);
-		vector<int> hierholzer_euler_tour(vector<edge_des>, int, int);
+		vector<int> hierholzer(vector<edge_des>, int, int);
+		int hierholzer_euler_tourR(vector<edge_des>, int, int);
 
 
 };

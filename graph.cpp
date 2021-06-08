@@ -219,9 +219,10 @@ vector<int> TSP::christofides(){
     visit[spanning_tree[i].m_target]++;
   }
   int odd = 0;
-  for(int i =0; i < n; i++){
+  for(int i = 0; i < n; i++){
     if(visit[i] %2 == 0) continue;
-    odd_vert.push_back(visit[i]);
+    cout << i << " ";
+    odd_vert.push_back(i);
     odd++;
   }
   
@@ -242,8 +243,9 @@ vector<int> TSP::christofides(){
   //store the order the vertices that are visited in
   //make sure that if the next edge being traveled to is the starting edge
   //that there arent any other edges to travel to first
-  vector<int> euler_t = hierholzer_euler_tour(spanning_tree, spanning_tree.back().m_source, spanning_tree.back().m_source);
+  vector<int> euler_t = hierholzer(spanning_tree, spanning_tree.back().m_source, spanning_tree.back().m_source);
 
+  exit(0);
 
   //remove duplicate vertices and return the solution
   vector<int> ret;
@@ -267,45 +269,61 @@ vector<int> TSP::christofides(){
 vector<edge_des>* TSP::min_perfect_matching(vector<int>* verts, int odd){
   //create a matching 
   //pick a vertex and find a matching of minimum weight
-  cout << "test" ;
-  vector<edge_des> ret;
+  
+  vector<edge_des> *ret = new vector<edge_des>;
 
-
-  auto comp = [](edge_des u, edge_des v){ 
-    return u.m_eproperty < v.m_eproperty;
-    };
+  auto comp = [](edge_des u, edge_des v){return u.m_eproperty < v.m_eproperty;};
 
   priority_queue <edge_des, vector<edge_des>, decltype(comp)> pq(comp);
-
+  cout << "odd verts ";
+  for (auto it : *verts)
+    cout << it << " ";
   //adding every edge to the pq
   for(int i = 0; i < odd; i++){
-    for (int j = i + 1; j < odd; j++)
+    for (int j = i + 1; j < odd; j++){
       pq.push(int_to_edge(verts->at(i),verts->at(j)));
+      cout << "(" << verts->at(j) <<"," << verts->at(i) << ")" << " " << pq.top() << endl;
+    }
   }
+
+  cout << endl;
   //find the minimum edges till all vertices are perfect matched
   bool used[odd];
   for (int i = 0; i < odd; i++)
     used[i] = false;
 
   edge_des ed;
+
   for(int i = 0; !pq.empty(); i++){
     ed = pq.top();
+    cout << ed << " " ;
     if (used[ed.m_source] == true || used[ed.m_target] == true) {
       pq.pop();
       continue;
     }
     used[ed.m_source] = true;
     used[ed.m_target] = true;
-    ret.push_back(ed);
+    ret->push_back(ed);
     pq.pop();
     
   }
+  cout << endl;
+  cout << ret->size();
+  for (int i =0; i < ret->size(); i++)
+    cout << ret->at(i) << " ";
+  cout << endl;
   return ret;  
   
 }
 
+vector<int> TSP::hierholzer(vector<edge_des> tree, int start, int current){
+  vector<int> ret;
+  
+}
+
+
 //hierholzers algorithm
-vector<int> TSP::hierholzer_euler_tour(vector<edge_des> tree, int start, int current){
+int TSP::hierholzer_euler_tourR(vector<edge_des> tree, int start, int current){
   
   vector<int> ret;
   //end case
@@ -313,7 +331,6 @@ vector<int> TSP::hierholzer_euler_tour(vector<edge_des> tree, int start, int cur
     ret.push_back(start);
     return ret;
   }
-  
   int next = 0, ne = 0;
   vector<edge_des> degree;
   //gets the degree of the current vertex
@@ -334,7 +351,10 @@ vector<int> TSP::hierholzer_euler_tour(vector<edge_des> tree, int start, int cur
   tree.erase(tree.begin() + i);
   
   ret.push_back(current);
-  vector<int> rec = hierholzer_euler_tour(tree,start, next);
+  cout << "1 ";
+  vector<int> *rec = new vector<int>;
+  rec = hierholzer_euler_tour(tree,start, next);
+  exit(0);
   ret.insert(ret.end(),rec.begin(),rec.end());
   return ret;
 }
@@ -342,8 +362,12 @@ vector<int> TSP::hierholzer_euler_tour(vector<edge_des> tree, int start, int cur
 
 edge_des TSP::int_to_edge(int v, int u){
   out_edge_pair out_p = out_edges(index_map[v], *adj_list);
-  for (;out_p.first != out_p.second; out_p.first++)
-    if(target(*out_p.first, *adj_list) == index_map[u]) return *out_p.first;
+  for (;out_p.first != out_p.second; out_p.first++){
+    if(target(*out_p.first, *adj_list) == index_map[u]){ 
+      cout << "return of int to edge: (" << target(*out_p.first,*adj_list)<< "," << source(*out_p.first,*adj_list) << ") \n";
+      return *out_p.first;
+    }
+  }
   
   return *out_p.second;
 }
