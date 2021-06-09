@@ -251,7 +251,7 @@ vector<int> TSP::christofides(){
   //that there arent any other edges to travel to first
   vector<int> euler_t = hierholzer(spanning_tree, spanning_tree.back().m_source, spanning_tree.back().m_source);
 
-  exit(0);
+  
 
   //remove duplicate vertices and return the solution
   vector<int> ret;
@@ -305,14 +305,7 @@ vector<edge_des>* TSP::min_perfect_matching(vector<int>* verts, vector<edge_des>
     ed = pq.top();
     t = false;
 
-    //making sure that the edge does not already exist in the spanning tree
-    for (auto it : tree){
-      if (it == ed){
-        pq.pop();
-        t = true;
-        break;
-      }
-    }
+
     if (t) continue;
     if (used[ed.m_source] == true || used[ed.m_target] == true) {
       pq.pop();
@@ -338,11 +331,11 @@ vector<int> TSP::hierholzer(vector<edge_des> tree, int start, int current){
   int curr = 0;
   cout << tree.front();
   while(!tree.empty()){
-    cout << "9" ;
+    cout << "\n9 " << tree.size();
     ret.push_back(hierholzer_euler_tourR(tree,0,curr));
     curr = ret.back();
     cout << endl << curr << endl;
-    exit(0);
+    //exit(0);
   }
   return ret;
 
@@ -350,7 +343,7 @@ vector<int> TSP::hierholzer(vector<edge_des> tree, int start, int current){
 
 
 //hierholzers algorithm
-int TSP::hierholzer_euler_tourR(vector<edge_des> tree, int start, int current){
+int TSP::hierholzer_euler_tourR(vector<edge_des> &tree, int start, int current){
 
   int next = 0, ne = 0, ret;
   vector<edge_des> degree;
@@ -360,8 +353,14 @@ int TSP::hierholzer_euler_tourR(vector<edge_des> tree, int start, int current){
       degree.push_back(it);
   }
   //make sure that the next vertex isnt current
-  if(degree.back().m_source == current) next = degree.back().m_target;
-  else next = degree.back().m_source;
+  if(degree.back().m_source == current) {
+  cout << " seg fault" << endl;
+    next = degree.back().m_target;
+  }
+  else {
+    cout << "seg f " << degree.size() <<  endl;
+    next = degree.back().m_source;
+  }
   //find next in tree and remove it
   int i =0;
   for (auto it:tree){
