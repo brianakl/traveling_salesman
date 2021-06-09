@@ -231,8 +231,14 @@ vector<int> TSP::christofides(){
   vector<edge_des>* perfect_match;
   cout << "seg" << endl;
   //*perfect_match = min_perfect_matching(&odd_vert,odd);
-  perfect_match = min_perfect_matching(&odd_vert, odd);
+  perfect_match = min_perfect_matching(&odd_vert, spanning_tree, odd);
   //add the edges of the MPM to the MST
+
+  cout << "perfect matching: ";
+  for (auto it : *perfect_match){
+    cout << it << " ";
+  }
+  cout << endl;
   while(!perfect_match->empty()){
     spanning_tree.push_back(perfect_match->back());
     perfect_match->pop_back();
@@ -266,7 +272,7 @@ vector<int> TSP::christofides(){
 }
 
 
-vector<edge_des>* TSP::min_perfect_matching(vector<int>* verts, int odd){
+vector<edge_des>* TSP::min_perfect_matching(vector<int>* verts, vector<edge_des> tree, int odd){
   //create a matching 
   //pick a vertex and find a matching of minimum weight
   
@@ -282,7 +288,6 @@ vector<edge_des>* TSP::min_perfect_matching(vector<int>* verts, int odd){
   for(int i = 0; i < odd; i++){
     for (int j = i + 1; j < odd; j++){
       pq.push(int_to_edge(verts->at(i),verts->at(j)));
-      cout << "(" << verts->at(j) <<"," << verts->at(i) << ")" << " " << pq.top() << endl;
     }
   }
 
@@ -294,9 +299,21 @@ vector<edge_des>* TSP::min_perfect_matching(vector<int>* verts, int odd){
 
   edge_des ed;
 
+  bool t;
+
   for(int i = 0; !pq.empty(); i++){
     ed = pq.top();
-    cout << ed << " " ;
+    t = false;
+
+    //making sure that the edge does not already exist in the spanning tree
+    for (auto it : tree){
+      if (it == ed){
+        pq.pop();
+        t = true;
+        break;
+      }
+    }
+    if (t) continue;
     if (used[ed.m_source] == true || used[ed.m_target] == true) {
       pq.pop();
       continue;
@@ -318,20 +335,24 @@ vector<edge_des>* TSP::min_perfect_matching(vector<int>* verts, int odd){
 
 vector<int> TSP::hierholzer(vector<edge_des> tree, int start, int current){
   vector<int> ret;
-  
+  int curr = 0;
+  cout << tree.front();
+  while(!tree.empty()){
+    cout << "9" ;
+    ret.push_back(hierholzer_euler_tourR(tree,0,curr));
+    curr = ret.back();
+    cout << endl << curr << endl;
+    exit(0);
+  }
+  return ret;
+
 }
 
 
 //hierholzers algorithm
 int TSP::hierholzer_euler_tourR(vector<edge_des> tree, int start, int current){
-  
-  vector<int> ret;
-  //end case
-  if (tree.empty()){
-    ret.push_back(start);
-    return ret;
-  }
-  int next = 0, ne = 0;
+
+  int next = 0, ne = 0, ret;
   vector<edge_des> degree;
   //gets the degree of the current vertex
   for(auto it : tree){
@@ -339,7 +360,6 @@ int TSP::hierholzer_euler_tourR(vector<edge_des> tree, int start, int current){
       degree.push_back(it);
   }
   //make sure that the next vertex isnt current
-
   if(degree.back().m_source == current) next = degree.back().m_target;
   else next = degree.back().m_source;
   //find next in tree and remove it
@@ -350,12 +370,8 @@ int TSP::hierholzer_euler_tourR(vector<edge_des> tree, int start, int current){
   }
   tree.erase(tree.begin() + i);
   
-  ret.push_back(current);
-  cout << "1 ";
-  vector<int> *rec = new vector<int>;
-  rec = hierholzer_euler_tour(tree,start, next);
-  exit(0);
-  ret.insert(ret.end(),rec.begin(),rec.end());
+  ret = next;
+  
   return ret;
 }
 
@@ -364,7 +380,6 @@ edge_des TSP::int_to_edge(int v, int u){
   out_edge_pair out_p = out_edges(index_map[v], *adj_list);
   for (;out_p.first != out_p.second; out_p.first++){
     if(target(*out_p.first, *adj_list) == index_map[u]){ 
-      cout << "return of int to edge: (" << target(*out_p.first,*adj_list)<< "," << source(*out_p.first,*adj_list) << ") \n";
       return *out_p.first;
     }
   }

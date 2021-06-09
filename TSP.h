@@ -71,7 +71,7 @@ class TSP{
 		void print_path(vector<int>);
 		int get_vertices(){return n;};
 		vector<int> christofides();
-		vector<edge_des>* min_perfect_matching(vector<int>*,int);
+		vector<edge_des>* min_perfect_matching(vector<int>*, vector<edge_des>,int);
 		edge_des int_to_edge(int,int);
 		vector<int> hierholzer(vector<edge_des>, int, int);
 		int hierholzer_euler_tourR(vector<edge_des>, int, int);
