@@ -26,8 +26,8 @@ TSP::TSP(const string& fileName, input_type type){
     exit(1);
   }
 
-  ifile >> this->n;
-  ifile >> this->e;
+  ifile >> n;
+  ifile >> e;
 
   adj_list = new Graph(n);
 
@@ -69,7 +69,7 @@ TSP::TSP(const string& fileName, input_type type){
         y1 = coords[i].second;
         x2 = coords[j].first;
         y2 = coords[j].second;
-        ewp = sqrt(pow(x2-x1,2) + pow(y2-y1,2));
+        ewp = sqrt(pow((x2-x1),2) + pow((y2-y1),2));
         add_edge(i,j,ewp,*adj_list);
       }
     }
@@ -127,7 +127,22 @@ void TSP::print_path(vector<int> path) {
 }
 
 //recursively returns the total distance of a path
-double TSP::distance(vector<int> path, int i) const{
+double TSP::distance(vector<int> path, int i) {
+
+  i = path.back();
+  int start = i;
+  double dist = 0;
+  edge_des cur;
+  while(path.size() > 1){
+    i = path.back();
+    path.pop_back();
+    dist += edge_weight_map[int_to_edge(i,path.back())];
+  }
+  dist += edge_weight_map[int_to_edge(start,path.back())];
+  return dist;
+
+
+  /*
   out_edge_pair out_i;
   double ret = 0;
 
@@ -147,6 +162,7 @@ double TSP::distance(vector<int> path, int i) const{
     if (target(*out_i.first, *adj_list) == index_map[path[i+1]]) break;
   }
   return edge_weight_map[*out_i.first] + distance(path, ++i);
+  */
 }
 
 //creates a path using the nearest unvisited neighbor as the next choice
@@ -252,11 +268,13 @@ vector<int> TSP::christofides(){
     if (duplicates[it])
       continue;
     ret.push_back(it);
+    duplicates[it] = true;
   }
 
-  distance(ret);
+  //distance(ret);
   print_path(ret);
   return ret;
+  exit(0);
 
 
 }

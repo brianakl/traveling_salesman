@@ -66,7 +66,7 @@ class TSP{
 		int getNeighbors() const;
 		void tsp_brute();
 		void tsp_brute_forceR(vertex_des, vertex_des, double dist = 0);
-		double distance(vector<int>, int i = 0) const;
+		double distance(vector<int>, int i = 0);
 		vector<int> nearest_neighbor_path() const;
 		void print_path(vector<int>);
 		int get_vertices(){return n;};
