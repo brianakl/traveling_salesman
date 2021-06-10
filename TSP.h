@@ -4,11 +4,9 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/property_map/property_map.hpp>
-#include <map>
+#include <boost/dynamic_bitset.hpp>
 #include <iostream>
 #include <utility>
-#include <stack>
-#include <queue>
 #include <vector>
 
 using namespace std;
@@ -60,6 +58,7 @@ class TSP{
 		vector<mark_t> mrk;
 		//index map for vertices
 		IndexMap index_map;
+		dynamic_bitset<>* bs;
 
 	public:
 		TSP(const string& fileName, input_type);
@@ -75,6 +74,8 @@ class TSP{
 		edge_des int_to_edge(int,int);
 		vector<int> hierholzer(vector<edge_des>);
 		int hierholzer_euler_tourR(vector<edge_des>&,int, int);
+		vector<int> dynamic_tsp();
+		void setup(vector<dynamic_bitset<> > &, int);
 
 
 };
