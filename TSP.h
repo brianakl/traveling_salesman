@@ -14,7 +14,7 @@
 using namespace std;
 using namespace boost;
 
-enum mark_t {UNVISITED, VISITED, START};
+enum mark_t {UNVISITED, VISITED, DISCOVERED, START};
 enum input_type{DIST_MATRIX, COORDINATES};
 
 //General Graph and Graph edge weight property
@@ -73,8 +73,8 @@ class TSP{
 		vector<int> christofides();
 		vector<edge_des>* min_perfect_matching(vector<int>*, vector<edge_des>,int);
 		edge_des int_to_edge(int,int);
-		vector<int> hierholzer(vector<edge_des>, int, int);
-		int hierholzer_euler_tourR(vector<edge_des>&, int, int);
+		vector<int> hierholzer(vector<edge_des>);
+		int hierholzer_euler_tourR(vector<edge_des>&,int, int);
 
 
 };
