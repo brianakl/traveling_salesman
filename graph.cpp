@@ -74,6 +74,14 @@ TSP::TSP(const string& fileName, input_type type){
 
   bs = new dynamic_bitset<>(n,0);
 
+  //for the dp function a 2^n by n vector
+  for(int i = 0; i < pow(2,n); i++){
+    paths.push_back(vector<double>());
+    for(int j = 0; j<n; j++){
+        paths[i].push_back(-1);
+    }
+  }
+
   ifile.close();
   min = 1000000;
 

@@ -7,7 +7,9 @@
 #include <boost/dynamic_bitset.hpp>
 #include <iostream>
 #include <utility>
+#include <unordered_map>
 #include <vector>
+#include <tuple>
 
 using namespace std;
 using namespace boost;
@@ -40,6 +42,7 @@ typedef property_map<Graph, edge_weight_t>::type EdgeWeightMap;
 typedef graph_traits<Graph>::out_edge_iterator out_edge_iter;
 typedef pair<out_edge_iter, out_edge_iter> out_edge_pair;
 
+ inline size_t key(int i,int j) {return (size_t) i << 32 | (unsigned int) j;}
 
 
 class TSP{
@@ -47,6 +50,11 @@ class TSP{
 		int n; //number of vertices
 		int e; //number of edges
 		int min;
+		pair<int,int> best_pair;
+		//for the dp function it creates a 2^n by n matrix
+		vector<vector<double> > paths;
+		std::unordered_map<size_t,vector<int> > path_xd;
+		
 		//adjacency list
 		Graph *adj_list;
 
@@ -74,8 +82,8 @@ class TSP{
 		edge_des int_to_edge(int,int);
 		vector<int> hierholzer(vector<edge_des>);
 		int hierholzer_euler_tourR(vector<edge_des>&,int, int);
-		vector<int> dynamic_tsp();
-		void setup(vector<dynamic_bitset<> > &, int);
+		double dynamic_tsp(int, int); 
+		void print_dtsp();
 
 
 };
