@@ -12,7 +12,7 @@ int main(){
     using chrono::duration;
     using chrono::seconds;
 
-	TSP tsp("very_large_tsp.txt", COORDINATES);
+	TSP tsp("large_tsp.txt", COORDINATES);
 	vector<int> test = tsp.nearest_neighbor_path();
 	double d = tsp.distance(test);
 
