@@ -53,8 +53,9 @@ class TSP{
 		double m;
 
 		//for the dp function it creates a 2^n by n matrix
-		vector<vector<double> > paths;
-		vector<int> parent;
+		vector<vector<double> > dp;
+		vector<vector<int> > path;
+		vector<int> parent,best_path;
 		
 		//adjacency list
 		Graph *adj_list;

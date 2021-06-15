@@ -75,14 +75,15 @@ TSP::TSP(const string& fileName, input_type type){
 
   //for the dp function a 2^n by n vector
   for(int i = 0; i < pow(2,n); i++){
-    paths.push_back(vector<double>());
+    dp.push_back(vector<double>());
     for(int j = 0; j<n; j++){
-        paths[i].push_back(-1);
+        dp[i].push_back(-1);
     }
   }
-  for(int i =0; i < n ; i++)
+  
+  for(int i = 0; i < n ; i++)
     parent.push_back(-1);
-
+  parent[0] = 0;
   ifile.close();
   min = m = INFINITY;
 

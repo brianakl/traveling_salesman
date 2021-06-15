@@ -12,26 +12,26 @@ double TSP::dynamic_tsp(int cities, int pos){
    }
 
     //if the path has already been discovered we can just look it up and return
-   if (paths[cities][pos] != -1){
-        return paths[cities][pos];
+   if (dp[cities][pos] != -1){
+        return dp[cities][pos];
    }
 
     //else we will call on next unvisited node
     for (int current = 0; current < n; current++){
-        if ((cities & (1<<current)) == 0){
-
+        int next_city = current;
+        if ((cities & (1 << current)) == 0){
             double a = edge_weight_map[int_to_edge(pos,current)] + dynamic_tsp(cities | (1 << current),current);
             
             if (ret > a) {
                 ret = a;
                 //vector of size n that stores the best path
                 parent[current] = pos;
-                parent.push_back(pos);
+                
 
             }
         }
     }
-    paths[cities][pos] = ret;
+    dp[cities][pos] = ret;
     return ret;
 }
 
