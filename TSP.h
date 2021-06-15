@@ -42,7 +42,7 @@ typedef property_map<Graph, edge_weight_t>::type EdgeWeightMap;
 typedef graph_traits<Graph>::out_edge_iterator out_edge_iter;
 typedef pair<out_edge_iter, out_edge_iter> out_edge_pair;
 
- inline size_t key(int i,int j) {return (size_t) i << 32 | (unsigned int) j;}
+inline size_t key(int i,int j) {return (size_t) i << 32 | (unsigned int) j;}
 
 
 class TSP{
@@ -50,10 +50,11 @@ class TSP{
 		int n; //number of vertices
 		int e; //number of edges
 		int min;
-		pair<int,int> best_pair;
+		double m;
+
 		//for the dp function it creates a 2^n by n matrix
 		vector<vector<double> > paths;
-		std::unordered_map<size_t,vector<int> > path_xd;
+		vector<int> parent;
 		
 		//adjacency list
 		Graph *adj_list;
@@ -66,7 +67,6 @@ class TSP{
 		vector<mark_t> mrk;
 		//index map for vertices
 		IndexMap index_map;
-		dynamic_bitset<>* bs;
 
 	public:
 		TSP(const string& fileName, input_type);
@@ -82,8 +82,9 @@ class TSP{
 		edge_des int_to_edge(int,int);
 		vector<int> hierholzer(vector<edge_des>);
 		int hierholzer_euler_tourR(vector<edge_des>&,int, int);
-		double dynamic_tsp(int, int); 
+		double dynamic_tsp(int = 1, int = 0); 
 		void print_dtsp();
+		int ith_bit(int);
 
 
 };

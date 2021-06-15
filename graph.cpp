@@ -72,7 +72,6 @@ TSP::TSP(const string& fileName, input_type type){
     mrk.push_back(UNVISITED);
   }
 
-  bs = new dynamic_bitset<>(n,0);
 
   //for the dp function a 2^n by n vector
   for(int i = 0; i < pow(2,n); i++){
@@ -81,15 +80,17 @@ TSP::TSP(const string& fileName, input_type type){
         paths[i].push_back(-1);
     }
   }
+  for(int i =0; i < n ; i++)
+    parent.push_back(-1);
 
   ifile.close();
-  min = 1000000;
+  min = m = INFINITY;
 
 
 }
 
 void TSP::print_path(vector<int> path) {
-  cout << "Best Cycle:" << endl;
+  cout << "Cycle:" << endl;
   for (int i = 0; i < n; i++){
     cout << path[i] << " ";
   }

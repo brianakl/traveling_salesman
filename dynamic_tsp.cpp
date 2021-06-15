@@ -4,37 +4,65 @@
 using namespace std;
 
 double TSP::dynamic_tsp(int cities, int pos){
-
-   double ret = 999999;
-
+   double ret = INFINITY;
     //end case if all nodes are visited
-   if (cities == ((1 << n)-1))
+   if (cities == ((1 << n) - 1)){
+       parent[0] = pos;
        return edge_weight_map[int_to_edge(pos,0)];
+   }
 
     //if the path has already been discovered we can just look it up and return
-   if (paths[cities][pos] != -1)
+   if (paths[cities][pos] != -1){
         return paths[cities][pos];
+   }
 
     //else we will call on next unvisited node
     for (int current = 0; current < n; current++){
         if ((cities & (1<<current)) == 0){
-            path_xd[key(pos,current)].push_back(pos);
+
             double a = edge_weight_map[int_to_edge(pos,current)] + dynamic_tsp(cities | (1 << current),current);
             
             if (ret > a) {
                 ret = a;
-                best_pair = make_pair(pos,current);
+                //vector of size n that stores the best path
+                parent[current] = pos;
+                parent.push_back(pos);
+
             }
         }
     }
+    paths[cities][pos] = ret;
     return ret;
 }
 
 void TSP::print_dtsp() {
-    cout << endl << "dtsp path: " << endl;
-    for (auto it : path_xd[key(best_pair.first,best_pair.second)]){
+vector<int> ret;
+    cout << endl << "dtsp path: " <<endl;
+
+    for (auto it : parent)
         cout << it << " ";
+    bool duplicates[n];
+    for (int i =0; i < n; i++) duplicates[i] = false;
+
+    for (auto it : parent){
+        if (duplicates[it])continue;
+        ret.push_back(it);
+        duplicates[it] = true;
     }
-    cout << endl;
+    parent = ret;
+    
+
+    print_path(parent);
 }
+
+int TSP::ith_bit(int x){
+    int ret = 0;
+    for (int i = 0; i < n; i++){
+        if((x & ( 1 << i )) == 1) ret = i;
+    }
+    return ret;
+}
+
+
+
 
