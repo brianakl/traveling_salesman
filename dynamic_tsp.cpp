@@ -15,10 +15,10 @@ double TSP::dynamic_tsp(int cities, int pos){
    if (dp[cities][pos] != -1){
         return dp[cities][pos];
    }
+    int next_city = pos;
 
     //else we will call on next unvisited node
     for (int current = 0; current < n; current++){
-        int next_city = current;
         if ((cities & (1 << current)) == 0){
             double a = edge_weight_map[int_to_edge(pos,current)] + dynamic_tsp(cities | (1 << current),current);
             
@@ -26,12 +26,15 @@ double TSP::dynamic_tsp(int cities, int pos){
                 ret = a;
                 //vector of size n that stores the best path
                 parent[current] = pos;
-                
+                next_city = current;
 
             }
         }
     }
     dp[cities][pos] = ret;
+    path[cities][pos] = next_city;
+    c = cities;
+    p = pos;
     return ret;
 }
 

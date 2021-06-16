@@ -76,8 +76,10 @@ TSP::TSP(const string& fileName, input_type type){
   //for the dp function a 2^n by n vector
   for(int i = 0; i < pow(2,n); i++){
     dp.push_back(vector<double>());
+    path.push_back(vector<int>());
     for(int j = 0; j<n; j++){
         dp[i].push_back(-1);
+        path[i].push_back(-1);
     }
   }
   

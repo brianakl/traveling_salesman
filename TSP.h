@@ -9,7 +9,6 @@
 #include <utility>
 #include <unordered_map>
 #include <vector>
-#include <tuple>
 
 using namespace std;
 using namespace boost;
@@ -49,7 +48,7 @@ class TSP{
 	private:
 		int n; //number of vertices
 		int e; //number of edges
-		int min;
+		int min,c,p;
 		double m;
 
 		//for the dp function it creates a 2^n by n matrix
