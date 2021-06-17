@@ -17,6 +17,8 @@ TSP::TSP(const string& fileName, input_type type){
     exit(1);
   }
 
+  j= 0;
+
   ifile >> n;
   ifile >> e;
 

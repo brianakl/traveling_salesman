@@ -10,6 +10,7 @@ int main(){
     using chrono::duration_cast;
     using chrono::duration;
     using chrono::seconds;
+	srand(time(0));
 
 	TSP tsp("large_tsp.txt", COORDINATES);
 	vector<int> test = tsp.nearest_neighbor_path();
@@ -44,6 +45,9 @@ int main(){
 	//cout << s_int.count() << "s\n";
     //cout << ms_double.count() << "ms\n";
 	tsp.print_dtsp();
+
+	cout << endl;
+	tsp.genetic_starter();
 
 	
 
