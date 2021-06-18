@@ -49,8 +49,8 @@ void TSP::genetic_starter(int pop){
         dist.push_back(distance(population[i]));
     }
     genetic_tsp(population,dist,pop);
-
-    print_path(best_genetic_path);
+    
+    print_path(*best_genetic_path);
 
 }
 
@@ -71,33 +71,32 @@ void TSP::genetic_tsp(vector<vector<int> >& population, vector<double>& dist, in
     //top 5% will go through 
     for (int i = 0; i < (0.05 * pop); i++){
         parents.push_back(population[pq.top()]);
+        offspring.push_back(population[pq.top()]);
+        vector<int> mutant = population[pq.top()];
+        mutate(mutant);
+        offspring.push_back(mutant);
         //best distance
         if (dist[pq.top()] < best_genetic_distance){
-            best_genetic_path = population[pq.top()];
+            best_genetic_path = new vector<int>();
+            *best_genetic_path = population[pq.top()];
             best_genetic_distance = distance(population[pq.top()]);
         }
         if (dist[pq.top()] < best_dist_current){
             best_dist_current = dist[pq.top()];
         }
-        auto h = population.begin() + n-1;
-        population[pq.top()] = *h;
-        population.pop_back();
-        auto l = dist.begin() + n-1;
-        dist[pq.top()] = *l;
-        dist.pop_back();
+
         pq.pop();
     }
-    cout << "Best distance of gen " << gen <<  " = " << best_dist_current << endl;
+    if (gen % 1000 == 0)
+        cout << "Best distance of gen " << gen <<  " = " << best_dist_current << endl;
     
     //selection method 1
-    /*
     vector<int> selected = selection(population,dist,pop);
     while(!selected.empty()){
         parents.push_back(population[selected.back()]);
         selected.pop_back();
     }
-    */
-
+    /*
     //selection method 2
 
 
@@ -109,57 +108,31 @@ void TSP::genetic_tsp(vector<vector<int> >& population, vector<double>& dist, in
         parents.push_back(population[pq.top()]);
         pq.pop();
     }
-    cout << "Parents list: \n";
-    
+*/
 
-    for (int i =0; i < parents.size(); i++){
-        cout << i << ":\t";
-        for (auto it : parents[i])
-            cout << it << " ";
-        cout << endl;
-    }
     //breeding
-    cout << endl << "breeding: " << endl;
     for (int i = 1; i < parents.size(); i++){
-        offspring.push_back(vector<int>());
-        //cout << "test " << i << " " << parents.size() << endl;
-        cout << i << "Parents: " << endl;
-        for (auto it : parents[i])
-            cout << it << " ";
 
-        cout << endl;
-        for(auto it : parents[i-1])
-            cout << it << " ";
-
-        offspring[i-1] = breed(parents[i],parents[i-1]);
-        offspring.push_back(vector<int>());
-        offspring[i-1] = breed(parents[i-1],parents[i]);
-
-        cout << endl << "Child:" << endl;
-        for (auto it : offspring[i-1])
-            cout << it << " ";
+        offspring.push_back(breed(parents[i],parents[i-1]));
+        offspring.push_back(breed(parents[i-1],parents[i]));
 
         //5% chance of mutation
         int r = rand() % 20;
-        cout << "r: " << r;
-        if (r == 15){
-            cout << "mutate";
-            mutate(offspring[i-1]);
-        }
-        cout << endl << endl;
+
+        if (r == 0) mutate(offspring[i-1]);
+
     
     }
 
-    cout << "end" <<endl;
     vector<double> off_dist;
     int t = 0;
+
+    offspring.erase(offspring.begin()+pop, offspring.end());
+    
     for (auto it : offspring){
         off_dist.push_back(distance(it));
-        cout << off_dist.back() << endl;
     }
-    exit(0);
-    cout << "test" << endl;
-
+    
     genetic_tsp(offspring,off_dist,offspring.size(),++gen);
 
 }
@@ -189,7 +162,6 @@ vector<int> TSP::breed(vector<int>& p1, vector<int>& p2){
         r0 = r1;
         r1 = t;
     }
-    cout << endl << r0 << " "  << r1;
     int p1_map = 0;
     //mark all the cities of p1 from [0,r0) U (r1,n]
     for (int i = 0; i < n; i++){
@@ -200,11 +172,6 @@ vector<int> TSP::breed(vector<int>& p1, vector<int>& p2){
        }
        ret.push_back(-1);
     }
-    //if (j == 2) exit(0);
-    //j++;
-    //ret.insert(ret.begin(),p1.begin(), p1.begin() + r0);
-    //ret.insert(ret.end(), r1-r0 +1, -1);
-    //ret.insert(ret.begin() + r1+1, p1.begin() + r1+1, p1.end());
 
     for (int i = 0; i < n; i++){
         //if p2[i] has already been visited then we skip it
