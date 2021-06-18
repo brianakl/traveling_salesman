@@ -58,7 +58,7 @@ void TSP::genetic_tsp(vector<vector<int> >& population, vector<double>& dist, in
     //sets limit to number of generations
     if (gen > GEN_LIMIT) return;
     //create a priority queue of the population for elitism
-    auto comp = [&](int u, int v){return dist[u] < dist[v];};
+    auto comp = [&](int u, int v){return dist[u] > dist[v];};
     priority_queue <int, vector<int>, decltype(comp)> pq(comp);
 
     double best_dist_current = INFINITY;
@@ -99,11 +99,18 @@ void TSP::genetic_tsp(vector<vector<int> >& population, vector<double>& dist, in
     */
 
     //selection method 2
+
+
     while(pq.size() > (pop * 0.45)){
+        if (population[pq.top()].size() == 0){
+            pq.pop();
+            continue;
+        }
         parents.push_back(population[pq.top()]);
         pq.pop();
     }
     cout << "Parents list: \n";
+    
 
     for (int i =0; i < parents.size(); i++){
         cout << i << ":\t";
@@ -114,7 +121,6 @@ void TSP::genetic_tsp(vector<vector<int> >& population, vector<double>& dist, in
     //breeding
     cout << endl << "breeding: " << endl;
     for (int i = 1; i < parents.size(); i++){
-        if (parents[i].size() == 0 || parents[i-1].size() == 0) continue;
         offspring.push_back(vector<int>());
         //cout << "test " << i << " " << parents.size() << endl;
         cout << i << "Parents: " << endl;
@@ -128,7 +134,6 @@ void TSP::genetic_tsp(vector<vector<int> >& population, vector<double>& dist, in
         offspring[i-1] = breed(parents[i],parents[i-1]);
         offspring.push_back(vector<int>());
         offspring[i-1] = breed(parents[i-1],parents[i]);
-        //if (i == 3) exit(0);
 
         cout << endl << "Child:" << endl;
         for (auto it : offspring[i-1])
@@ -136,18 +141,24 @@ void TSP::genetic_tsp(vector<vector<int> >& population, vector<double>& dist, in
 
         //5% chance of mutation
         int r = rand() % 20;
+        cout << "r: " << r;
         if (r == 15){
             cout << "mutate";
-            mutate(offspring[i]);
+            mutate(offspring[i-1]);
         }
         cout << endl << endl;
     
     }
-    vector<double> off_dist;
 
+    cout << "end" <<endl;
+    vector<double> off_dist;
+    int t = 0;
     for (auto it : offspring){
         off_dist.push_back(distance(it));
+        cout << off_dist.back() << endl;
     }
+    exit(0);
+    cout << "test" << endl;
 
     genetic_tsp(offspring,off_dist,offspring.size(),++gen);
 

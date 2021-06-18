@@ -87,7 +87,7 @@ class TSP{
 		double dynamic_tsp(int = 1, int = 0); 
 		void print_dtsp();
 		int ith_bit(int);
-		void genetic_starter(int pop = 50);
+		void genetic_starter(int pop = 100);
 		void genetic_tsp(vector<vector<int> >&, vector<double>&, int, int gen = 0);
 		vector<int> selection(vector<vector<int> >&, vector<double>&, int);
 		vector<int> breed(vector<int>&, vector<int>&);

@@ -109,6 +109,7 @@ double TSP::distance(vector<int> path, int i) {
   int start = i;
   double dist = 0;
   edge_des cur;
+  
   while(path.size() > 1){
     i = path.back();
     path.pop_back();
