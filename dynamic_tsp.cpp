@@ -33,8 +33,6 @@ double TSP::dynamic_tsp(int cities, int pos){
     }
     dp[cities][pos] = ret;
     path[cities][pos] = next_city;
-    c = cities;
-    p = pos;
     return ret;
 }
 

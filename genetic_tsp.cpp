@@ -96,9 +96,9 @@ void TSP::genetic_tsp(vector<vector<int> >& population, vector<double>& dist, in
         parents.push_back(population[selected.back()]);
         selected.pop_back();
     }
+
     /*
     //selection method 2
-
 
     while(pq.size() > (pop * 0.45)){
         if (population[pq.top()].size() == 0){
@@ -117,7 +117,7 @@ void TSP::genetic_tsp(vector<vector<int> >& population, vector<double>& dist, in
         offspring.push_back(breed(parents[i-1],parents[i]));
 
         //5% chance of mutation
-        int r = rand() % 20;
+        int r = rand() % 15;
 
         if (r == 0) mutate(offspring[i-1]);
 

@@ -37,14 +37,14 @@ int main(){
 	vector<int> sdf = tsp.christofides();
 
 	t1 = high_resolution_clock::now();
-	double dtsp = tsp.dynamic_tsp();
-	cout << "\n\nDynamic solution distance: " << dtsp << endl;
+	//double dtsp = tsp.dynamic_tsp();
+	//cout << "\n\nDynamic solution distance: " << dtsp << endl;
 	t2 = high_resolution_clock::now();
 	s_int = duration_cast<seconds>(t2-t1);
 	ms_double = t2-t1;
 	//cout << s_int.count() << "s\n";
     //cout << ms_double.count() << "ms\n";
-	tsp.print_dtsp();
+	//tsp.print_dtsp();
 
 	cout << endl;
 	tsp.genetic_starter();
