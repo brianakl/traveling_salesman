@@ -92,6 +92,7 @@ class TSP{
 		vector<int> selection(vector<vector<int> >&, vector<double>&, int);
 		vector<int> breed(vector<int>&, vector<int>&);
 		void mutate(vector<int>&);
+		
 
 
 };
