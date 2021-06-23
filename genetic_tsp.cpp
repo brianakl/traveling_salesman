@@ -118,10 +118,8 @@ void TSP::genetic_tsp(vector<vector<int> >& population, vector<double>& dist, in
 
         //5% chance of mutation
         int r = rand() % 15;
-
         if (r == 0) mutate(offspring[i-1]);
 
-    
     }
 
     vector<double> off_dist;
