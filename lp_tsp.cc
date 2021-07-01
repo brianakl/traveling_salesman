@@ -1,10 +1,4 @@
-/*
 
-minimize the total cost of visiting every city once
-
-
-*/
-#include "TSP.h"
 #include <iostream>
 #include "ortools/linear_solver/linear_solver.h"
 
@@ -12,7 +6,7 @@ minimize the total cost of visiting every city once
 
 namespace operations_research{
 
-    void TSP::lp_relax(){
+    void lp_tsp(){
 
 
         //test graph
@@ -63,4 +57,13 @@ namespace operations_research{
 
     }
 
+}
+
+
+int main(){
+
+    lp_tsp();
+
+
+    return 0;
 }
