@@ -1,5 +1,7 @@
 #include <iostream>
 #include "ortools/linear_solver/linear_solver.h"
+#include "ortools/sat/cp_model.h"
+
 
 using namespace std;
 
@@ -83,11 +85,6 @@ namespace operations_research{
 
     }
 
-
-}
-
-
-namespace operations_research{
     void BasicExample(){
         //creates the linear solver wiht glop
         unique_ptr<MPSolver> solver(MPSolver::CreateSolver("GLOP"));
@@ -117,12 +114,107 @@ namespace operations_research{
         LOG(INFO) << "y = " << y->solution_value();
 
     }
+
+    void lp_tsp(){
+
+        //test graph
+        //shortest path = 0 -> 1 -> 2 -> 3 -> 0
+        double dist_m [4][4] = {
+            {0, 1, 1, 4},
+            {8, 0, 2, 6},
+            {9, 7, 0, 2},
+            {3, 6, 5, 0}
+        };
+        int n = 4;
+        vector<vector<MPVariable*>* >* vec;
+        vector<MPVariable*> *v;
+
+        unique_ptr<MPSolver> solver(MPSolver::CreateSolver("GLOP"));
+        const double infinity = solver->infinity();
+
+        //MPVariable* const x = solver->MakeNumVar(0.0,infinity,"x");
+        //MakeNumVarArray(double upper bound, lower bound, name, vector)
+        // 0 <= x_ij <= 1
+        
+        solver->MakeNumVarArray(n, 0.0, 1.0, "row0", v);
+        LOG(INFO) << "Number of variables:\t" << solver->NumVariables();
+
+
+        for(int i = 0; i < n; i++)
+            vec->push_back(new vector<MPVariable*>());
+        
+        exit(0);
+
+        //solver->MakeNumVarArray(n, 0.0, 1.0, "row0", vec->at(0));
+        //solver->MakeNumVarArray(n, 0.0, 1.0, "row1", vec->at(1));            
+        //solver->MakeNumVarArray(n, 0.0, 1.0, "row2", vec->at(2));
+        //solver->MakeNumVarArray(n, 0.0, 1.0, "row3", vec->at(3));
+
+       //MakeNumVar(double lower bound, double upper bound, var name)
+       //MPVariable* const x = solver->MakeNumVar(0.0,1.0, "x");
+       
+
+        // Σ ∀
+
+        //objective function
+        //minimize Σ(n,i=1)[Σ(i-1,j=1)[c_ij * x_ij] ]
+        
+        MPObjective* const objective = solver->MutableObjective();
+        objective->SetMinimization();        
+
+        for (int i = 1; i < n; i++){
+            for (int j = 1; j < i-1; j++){
+                objective->SetCoefficient(vec->at(i)->at(j), dist_m[i][j]);
+            }
+        }
+        //constraints
+        // ∀(i) 1 <= i <= n     
+        // ∀(ij) 1 <= j < i <= n
+        // Σ(j<i)[x_ij] + Σ(j>i)[x_ji] = 2
+
+
+        //loop through every possible set of 
+
+
+        //make constraints
+
+        //MPConstraint* const c0 = solver->MakeRowConstraint();
+
+    }
+
+    namespace sat{
+        void tsp_cp(){
+            CpModelBuilder cp_model;
+            double dist_m [4][4] = {
+                {0, 1, 1, 4},
+                {8, 0, 2, 6},
+                {9, 7, 0, 2},
+                {3, 6, 5, 0}
+            };
+            int n = 4;
+
+            const Domain domain(0.0,1.0);
+
+            //variables
+            const IntVar x0 = cp_model.NewIntVar(domain).WithName("x0");
+            const IntVar x1 = cp_model.NewIntVar(domain).WithName("x1");
+            const IntVar x2 = cp_model.NewIntVar(domain).WithName("x2");
+            const IntVar x3 = cp_model.NewIntVar(domain).WithName("x3");
+
+            //constraints
+            cp_model.AddGreaterOrEqual(x1, 12);
+
+            
+        }
+    }
 }
 
 
 int main() {
 
     operations_research::SimpleMipProgram();
+
+    operations_research::sat::tsp_cp();
 
     return EXIT_SUCCESS;
 }
