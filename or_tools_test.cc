@@ -119,14 +119,15 @@ namespace operations_research{
 
         //test graph
         //shortest path = 0 -> 1 -> 2 -> 3 -> 0
-        double dist_m [4][4] = {
-            {0, 1, 1, 4},
-            {8, 0, 2, 6},
-            {9, 7, 0, 2},
-            {3, 6, 5, 0}
+        int dist_m [4][4] = {
+            {int(INFINITY), 1, 1, 4},
+            {8, int(INFINITY), 2, 6},
+            {9, 7, int(INFINITY), 2},
+            {3, 6, 5, int(INFINITY)}
         };
         int n = 4;
         vector<vector<MPVariable*>* >* vec;
+        vector<vector<MPConstraint*>* >* constraints;
         vector<MPVariable*> *v;
 
         unique_ptr<MPSolver> solver(MPSolver::CreateSolver("GLOP"));
@@ -136,14 +137,28 @@ namespace operations_research{
         //MakeNumVarArray(double upper bound, lower bound, name, vector)
         // 0 <= x_ij <= 1
         
-        solver->MakeNumVarArray(n, 0.0, 1.0, "row0", v);
-        LOG(INFO) << "Number of variables:\t" << solver->NumVariables();
+        //solver->MakeNumVarArray(n, 0.0, 1.0, "row0", v);
 
 
-        for(int i = 0; i < n; i++)
+        for(int i = 0; i < n; i++){
             vec->push_back(new vector<MPVariable*>());
-        
-        exit(0);
+            for (int j = 0; j < n; j++){
+                vec->at(i)->at(j) = solver->MakeIntVar(0.0, 1.0, "x_" + to_string(i) + to_string(j) );
+            }
+        }
+
+        LOG(INFO) << "Number of variables:\t" << solver->NumVariables();
+        //MPConstraint* const c0 = solver->MakeRowConstraint();
+        //c0->SetCoefficient();
+
+        //setting constraints
+        for(int i = 0; i < n; i++){
+            constraints->push_back(new vector<MPConstraint*>());
+            for (int j = 0; j < n; j++){
+                constraints->at(i)->at(j) = solver->MakeRowConstraint();
+                constraints->at(i)->at(j)->SetCoefficient(vec->at(i)->at(j), dist_m[i][j]);
+            }
+        }
 
         //solver->MakeNumVarArray(n, 0.0, 1.0, "row0", vec->at(0));
         //solver->MakeNumVarArray(n, 0.0, 1.0, "row1", vec->at(1));            
@@ -157,7 +172,7 @@ namespace operations_research{
         // Σ ∀
 
         //objective function
-        //minimize Σ(n,i=1)[Σ(i-1,j=1)[c_ij * x_ij] ]
+        //minimize Σ(n,i=1)[Σ(n,j=1)[c_ij * x_ij] ]
         
         MPObjective* const objective = solver->MutableObjective();
         objective->SetMinimization();        
@@ -196,13 +211,43 @@ namespace operations_research{
             const Domain domain(0.0,1.0);
 
             //variables
-            const IntVar x0 = cp_model.NewIntVar(domain).WithName("x0");
-            const IntVar x1 = cp_model.NewIntVar(domain).WithName("x1");
-            const IntVar x2 = cp_model.NewIntVar(domain).WithName("x2");
-            const IntVar x3 = cp_model.NewIntVar(domain).WithName("x3");
+            vector<vector<IntVar> > v;
 
+            for (int i = 0; i < n; i++){
+                v.push_back(vector<IntVar>());
+                for (int j = 0; j < n; j++){
+                    if (i == j) continue;
+                    v[i].push_back(cp_model.NewIntVar(domain).WithName("x_" + to_string(i)+ to_string(j)));
+                }
+            }
+
+            for (int i = 0; i < n; i++){
+                for (int j = 0; j <n; j++)
+                    v[i][j].AddConstant(dist_m[i][j]);
+            }
+
+            const IntVar x_01 = cp_model.NewIntVar(domain).WithName("x01");
+
+
+
+
+            /*
+            const IntVar x_02 = cp_model.NewIntVar(domain).WithName("x02");
+            const IntVar x_03 = cp_model.NewIntVar(domain).WithName("x03");
+            const IntVar x_10 = cp_model.NewIntVar(domain).WithName("x10");
+            const IntVar x_12 = cp_model.NewIntVar(domain).WithName("x12");
+            const IntVar x_13 = cp_model.NewIntVar(domain).WithName("x13");
+            const IntVar x_20 = cp_model.NewIntVar(domain).WithName("x20");
+            const IntVar x_21 = cp_model.NewIntVar(domain).WithName("x21");
+            const IntVar x_23 = cp_model.NewIntVar(domain).WithName("x23");
+            const IntVar x_30 = cp_model.NewIntVar(domain).WithName("x30");
+            const IntVar x_31 = cp_model.NewIntVar(domain).WithName("x31");
+            const IntVar x_32 = cp_model.NewIntVar(domain).WithName("x32");
+            */
             //constraints
-            cp_model.AddGreaterOrEqual(x1, 12);
+            
+            
+
 
             
         }
