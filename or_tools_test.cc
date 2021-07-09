@@ -1,8 +1,9 @@
 #include <iostream>
 #include <fstream>
+#include <chrono>
+#include <vector>
 #include "ortools/linear_solver/linear_solver.h"
 #include "ortools/sat/cp_model.h"
-#include <vector>
 #include "ortools/constraint_solver/routing.h"
 #include "ortools/constraint_solver/routing_enums.pb.h"
 #include "ortools/constraint_solver/routing_index_manager.h"
@@ -262,55 +263,7 @@ namespace operations_research{
         }
     }
 
-    struct DataModel{
-        /*
-        const vector<vector<int> > dist_matrix{
-            {int(INFINITY), 1, 1, 4},
-            {8, int(INFINITY), 2, 6},
-            {9, 7, int(INFINITY), 2},
-            {3, 6, 5, int(INFINITY)}
-        };
-        const vector<vector<int> > dist_matrix{
-            {0,	66,	9, 85, 7, 47, 18, 45, 45, 78, 23},
-            {5,	0,	81, 98,	45, 43, 45, 36, 82, 89, 22},
-            {71, 92, 0, 43, 77, 93, 74, 71, 23, 17, 90},
-            {40, 49, 18, 0, 32, 88, 56, 52, 93, 1, 42},
-            {40, 37, 67, 58, 0, 47, 89, 21, 20, 14, 53},
-            {4,	37,	9, 11, 98, 0, 9, 42, 1, 85, 12},
-            {3,	66, 8, 43, 50, 98, 0, 29, 19, 66, 61},
-            {48, 48, 3,	81,	95,	28, 60, 0, 47, 30, 39},
-            {100, 17, 75, 49, 79, 79, 42, 0, 29, 49},
-            {44, 13,	59,	15,	99,	75,	53,	47, 0, 82},
-            {10,2,	71,	99,	80,	35,	65,	76, 79, 0}
-        };
-       
-
-        vector<vector<int> > dist_matrix {
-            {0, 29, 82, 46, 68, 52, 72, 42, 51, 55, 29, 74, 23, 72, 46 },
-            {29,  0, 55, 46, 42, 43, 43, 23, 23, 31, 41, 51, 11, 52, 21 },
-            {82, 55,  0, 68, 46, 55, 23, 43, 41, 29, 79, 21, 64, 31, 51 },
-            {46, 46, 68,  0, 82, 15, 72, 31, 62, 42, 21, 51, 51, 43, 64 },
-            {68, 42, 46, 82,  0, 74, 23, 52, 21, 46, 82, 58, 46, 65, 23 },
-            {52, 43, 55, 15, 74,  0, 61, 23, 55, 31, 33, 37, 51, 29, 59 },
-            {72, 43, 23, 72, 23, 61,  0, 42, 23, 31, 77, 37, 51, 46, 33 },
-            {42, 23, 43, 31, 52, 23, 42,  0, 33, 15, 37, 33, 33, 31, 37 },
-            {51, 23, 41, 62, 21, 55, 23, 33,  0, 29, 62, 46, 29, 51, 11 },
-            {55, 31, 29, 42, 46, 31, 31, 15, 29,  0, 51, 21, 41, 23, 37 },
-            {29, 41, 79, 21, 82, 33, 77, 37, 62, 51,  0, 65, 42, 59, 61 },
-            {74, 51, 21, 51, 58, 37, 37, 33, 46, 21, 65,  0, 61, 11, 55 },
-            {23, 11, 64, 51, 46, 51, 51, 33, 29, 41, 42, 61,  0, 62, 23 },
-            {72, 52, 31, 43, 65, 29, 46, 31, 51, 23, 59, 11, 62,  0, 59 },
-            {46, 21, 51, 64, 23, 59, 33, 37, 11, 37, 61, 55, 23, 59,  0},
-            };
-        */
-
-        const int num_vehicles = 1;
-        const RoutingIndexManager::NodeIndex depot{0};
-        
-    };
-
     void tsp(){
-        //DataModel data;
 
         int n;
 
@@ -318,7 +271,7 @@ namespace operations_research{
         const int num_vehicles = 1;
         const RoutingIndexManager::NodeIndex depot{0};
 
-        string fileName = "1000_tsp.txt";    
+        string fileName = "att48_d.txt";    
         ifstream ifile;
         ifile.open(fileName);
         if (!ifile){
@@ -330,24 +283,23 @@ namespace operations_research{
 
         
         //dist matrix input
-        /*
 
         for(int i = 0; i < n; i++){
             dist_matrix.push_back(vector<int>());
             for(int j = 0; j < n; j++){
-                if (i == j){
-                    dist_matrix[i].push_back(0);
-                    continue;
-                }
+                //if (i == j){
+                  //  dist_matrix[i].push_back(0);
+                    //continue;
+                //}
                 int k;
                 ifile >> k;
                 dist_matrix[i].push_back(k);
             }
         }
-        */
 
+        /*
        //coordinates
-        double f = 0, s = 0;
+        double f = 0.0, s = 0.0;
         vector<pair<double, double> > coords;
         for (int i = 0; i < n; i++){
         ifile >> f >> s;
@@ -357,7 +309,8 @@ namespace operations_research{
         double x1,x2,y1,y2;
         x1 = x2 = y1 = y2 = 0.0;
         //calculates the edge weights for a graph that is euclidean 
-        for (int i = 1; i < n; i++){
+        for (int i = 0; i < n; i++){
+            dist_matrix.push_back(vector<int>());
             for (int j = 0; j < n; j++){
                 if (i == j) {
                     dist_matrix[i].push_back(0);
@@ -370,6 +323,8 @@ namespace operations_research{
                 dist_matrix[i].push_back((pow((x2-x1),2) + pow((y2-y1),2)));
             }
         }
+        
+        */
 
         RoutingIndexManager manager(n, num_vehicles, depot);
 
@@ -385,6 +340,9 @@ namespace operations_research{
 
         RoutingSearchParameters searchParams = DefaultRoutingSearchParameters();
         searchParams.set_first_solution_strategy(FirstSolutionStrategy::PATH_CHEAPEST_ARC);
+        //searchParams.set_local_search_metaheuristic(LocalSearchMetaheuristic::GUIDED_LOCAL_SEARCH);
+        //searchParams.mutable_time_limit()->set_seconds(30);
+        //searchParams.set_log_search(true);
 
         const Assignment* solution = routing.SolveWithParameters(searchParams);
 
@@ -409,8 +367,21 @@ namespace operations_research{
 int main() {
 
     //operations_research::SimpleMipProgram();
+    using chrono::high_resolution_clock;
+    using chrono::duration_cast;
+    using chrono::duration;
+    using chrono::seconds;
+
+    auto t1 = high_resolution_clock::now();
 
     operations_research::tsp();
+	
+	auto t2 = high_resolution_clock::now();
+	auto s_int = duration_cast<seconds>(t2-t1);
+	duration<double, std::milli> ms_double = t2 - t1;
+    LOG(INFO) << s_int.count() << "s\n";
+    LOG(INFO) << ms_double.count() << "ms\n";
+
 
     return 0;
 }

@@ -12,7 +12,7 @@ int main(){
     using chrono::seconds;
 	srand(time(0));
 
-	TSP tsp("lp_test.txt", DIST_MATRIX);
+	TSP tsp("p01_d.txt", DIST_MATRIX);
 	vector<int> test = tsp.nearest_neighbor_path();
 	double d = tsp.distance(test);
 
@@ -23,21 +23,25 @@ int main(){
 	}
 	cout << endl << "Distance: " << d << endl << endl << "Brute Force:"<< endl;
 
-	auto t1 = high_resolution_clock::now();
 	//tsp.tsp_brute();
-	auto t2 = high_resolution_clock::now();
-	auto s_int = duration_cast<seconds>(t2-t1);
-	duration<double, std::milli> ms_double = t2 - t1;
-
-    //cout << s_int.count() << "s\n";
-    //cout << ms_double.count() << "ms\n";
-	
-
 	cout << endl << endl << "Christofides: ";
 	vector<int> sdf = tsp.christofides();
 
+	double dtsp = tsp.dynamic_tsp();
+
+	cout << "Genetic: " << endl;
+	auto t1 = high_resolution_clock::now();
+
+	tsp.genetic_starter();
+	
+	auto t2 = high_resolution_clock::now();
+	auto s_int = duration_cast<seconds>(t2-t1);
+	duration<double, std::milli> ms_double = t2 - t1;
+    cout << s_int.count() << "s\n";
+    cout << ms_double.count() << "ms\n";
+
+
 	t1 = high_resolution_clock::now();
-	//double dtsp = tsp.dynamic_tsp();
 	//cout << "\n\nDynamic solution distance: " << dtsp << endl;
 	t2 = high_resolution_clock::now();
 	s_int = duration_cast<seconds>(t2-t1);
@@ -47,7 +51,6 @@ int main(){
 	//tsp.print_dtsp();
 
 	cout << endl;
-	tsp.genetic_starter();
 
 	
 

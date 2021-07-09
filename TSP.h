@@ -50,7 +50,7 @@ class TSP{
 	private:
 		int n; //number of vertices
 		int e; //number of edges
-		int min,best_genetic_distance, GEN_LIMIT = 5000, j;
+		int min,best_genetic_distance, GEN_LIMIT = 1000, j;
 		double m;
 
 		//for the dp function it creates a 2^n by n matrix
@@ -87,7 +87,7 @@ class TSP{
 		double dynamic_tsp(int = 1, int = 0); 
 		void print_dtsp();
 		int ith_bit(int);
-		void genetic_starter(int pop = 500);
+		void genetic_starter(int pop = 400);
 		void genetic_tsp(vector<vector<int> >&, vector<double>&, int, int gen = 0);
 		vector<int> selection(vector<vector<int> >&, vector<double>&, int);
 		vector<int> breed(vector<int>&, vector<int>&);
