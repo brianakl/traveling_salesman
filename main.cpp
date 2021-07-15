@@ -1,60 +1,90 @@
 #include <iostream>
 #include "TSP.h"
-#include <chrono>
+#include <fstream>
 
 using namespace std;
 
 int main(){
 
-	using chrono::high_resolution_clock;
-    using chrono::duration_cast;
-    using chrono::duration;
-    using chrono::seconds;
 	srand(time(0));
 
-	TSP tsp("us_capitals.txt", COORDINATES);
-	vector<int> test = tsp.nearest_neighbor_path();
-	double d = tsp.distance(test);
 
-	cout << "Nearest Neighbor cycle: \n";
-	for (int i=0; i < tsp.get_vertices(); i++){
-		cout << test[i] << " ";
+	cout << "Welcome to the tsp solver" << endl;
 
+	string filename;
+	int itype = -1;
+	ifstream ifile;
+
+	while (true){
+		cout << "Please enter a txt file name:	";
+
+		cin >> filename;
+		ifile.open(filename);
+		if (!ifile){
+			cout << "File name: " << filename << " does not exist" << endl;
+			continue;
+		} else break;
 	}
-	cout << endl << "Distance: " << d << endl << endl << "Brute Force:"<< endl;
+	ifile.close();
 
-	//tsp.tsp_brute();
-	//cout << endl << endl << "Christofides: ";
-	//vector<int> sdf = tsp.christofides();
+	while (itype < 0 || itype > 1){
+		cout << "Please enter the file enter 0 for coordinates or 1 for distance matrix:	";
+		
+		cin >> itype;
 
-	//double dtsp = tsp.dynamic_tsp();
+		if (itype < 0 || itype > 1){
+			cout << "Please enter either 0 or 1 " << itype << endl;
+		}
+	}
 
-	cout << "Genetic: " << endl;
-	auto t1 = high_resolution_clock::now();
+	TSP tsp(filename, static_cast<input_type>(itype));
 
-	tsp.genetic_starter();
-	
-	auto t2 = high_resolution_clock::now();
-	auto s_int = duration_cast<seconds>(t2-t1);
-	duration<double, std::milli> ms_double = t2 - t1;
-    cout << s_int.count() << "s\n";
-    cout << ms_double.count() << "ms\n";
+	int in = -1;
 
+	while(in != 0) {
+		cout << "\nEnter which algorithm you'd like to run on the data" << endl
+			 << "1. Nearest Neighbor" << endl
+			 << "2. Brute Force" << endl
+			 << "3. Christofides" << endl
+			 << "4. Dynamic Programming" << endl
+			 << "5. Genetic Algorithm" << endl
+			 << "6. EXIT" << endl;
 
-	t1 = high_resolution_clock::now();
-	//cout << "\n\nDynamic solution distance: " << dtsp << endl;
-	t2 = high_resolution_clock::now();
-	s_int = duration_cast<seconds>(t2-t1);
-	ms_double = t2-t1;
-	//cout << s_int.count() << "s\n";
-    //cout << ms_double.count() << "ms\n";
-	//tsp.print_dtsp();
+		cin >> in;
+		vector<int> temp;
 
-	cout << endl;
+		switch (in){
 
-	
+			case 6:
+				exit(0);
+				break;
+			case 1:
+				cout << "Nearest Neighbor"<< endl;
+				tsp.nearest_neighbor_path();
+				break;
+			case 2:
+				cout << "Brute Force: "<< endl;
+				tsp.tsp_brute();
+				break;
+			case 3:
+				cout << "Christofides" << endl;
+				tsp.christofides();
+				break;
+			case 4:
+				cout << "Dynamic Programming" << endl;
+				tsp.dynamic_tsp();
+				break;
+			case 5:
+				cout << "Genetic Algorithm" << endl;
+				tsp.genetic_starter();
+				break;		
+			default:
+				cout << "Please enter numbers 1-6";
+				break;
+		}
 
-
+		
+	}
 
 
 	return 0;

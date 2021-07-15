@@ -5,7 +5,7 @@
 
 //creates a path using the nearest unvisited neighbor as the next choice
 
-vector<int> TSP::nearest_neighbor_path() const{
+vector<int> TSP::nearest_neighbor_path(){
   vector<int> ret;
   vertex_pair current = vertices(*adj_list), next;
   out_edge_pair out_i = out_edges(*current.first, *adj_list), shortest_edge = out_i, q;
@@ -51,6 +51,7 @@ vector<int> TSP::nearest_neighbor_path() const{
     if (next.first == next.second)  break;
     current.first = next.first;
   }
+  print_path(ret);
   return ret;
   
 }

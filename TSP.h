@@ -50,7 +50,7 @@ class TSP{
 	private:
 		int n; //number of vertices
 		int e; //number of edges
-		int min,best_genetic_distance, GEN_LIMIT = 10000, j;
+		int min,best_genetic_distance, GEN_LIMIT = 3000, j;
 		double m;
 
 		//for the dp function it creates a 2^n by n matrix
@@ -76,7 +76,7 @@ class TSP{
 		void tsp_brute();
 		void tsp_brute_forceR(vertex_des, vertex_des, double dist = 0);
 		double distance(vector<int>, int i = 0);
-		vector<int> nearest_neighbor_path() const;
+		vector<int> nearest_neighbor_path();
 		void print_path(vector<int>);
 		int get_vertices(){return n;};
 		vector<int> christofides();
@@ -87,7 +87,7 @@ class TSP{
 		double dynamic_tsp(int = 1, int = 0); 
 		void print_dtsp();
 		int ith_bit(int);
-		void genetic_starter(int pop = 400);
+		void genetic_starter(int pop = 250);
 		void genetic_tsp(vector<vector<int> >&, vector<double>&, int, int gen = 0);
 		vector<int> selection(vector<vector<int> >&, vector<double>&, int);
 		vector<int> breed(vector<int>&, vector<int>&);
