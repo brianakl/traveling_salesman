@@ -50,7 +50,7 @@ class TSP{
 	private:
 		int n; //number of vertices
 		int e; //number of edges
-		int min,best_genetic_distance, GEN_LIMIT = 1000, j;
+		int min,best_genetic_distance, GEN_LIMIT = 10000, j;
 		double m;
 
 		//for the dp function it creates a 2^n by n matrix

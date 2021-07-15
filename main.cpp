@@ -12,7 +12,7 @@ int main(){
     using chrono::seconds;
 	srand(time(0));
 
-	TSP tsp("p01_d.txt", DIST_MATRIX);
+	TSP tsp("us_capitals.txt", COORDINATES);
 	vector<int> test = tsp.nearest_neighbor_path();
 	double d = tsp.distance(test);
 
@@ -24,10 +24,10 @@ int main(){
 	cout << endl << "Distance: " << d << endl << endl << "Brute Force:"<< endl;
 
 	//tsp.tsp_brute();
-	cout << endl << endl << "Christofides: ";
-	vector<int> sdf = tsp.christofides();
+	//cout << endl << endl << "Christofides: ";
+	//vector<int> sdf = tsp.christofides();
 
-	double dtsp = tsp.dynamic_tsp();
+	//double dtsp = tsp.dynamic_tsp();
 
 	cout << "Genetic: " << endl;
 	auto t1 = high_resolution_clock::now();
