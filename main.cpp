@@ -28,7 +28,7 @@ int main(){
 	ifile.close();
 
 	while (itype < 0 || itype > 1){
-		cout << "Please enter the file enter 0 for coordinates or 1 for distance matrix:	";
+		cout << "Please enter the file enter 1 for coordinates or 0 for distance matrix:	";
 		
 		cin >> itype;
 
