@@ -14,12 +14,15 @@ int main(){
 	string filename;
 	int itype = -1;
 	ifstream ifile;
+	string folder = "./txt_files/";
 
 	while (true){
 		cout << "Please enter a txt file name:	";
 
 		cin >> filename;
-		ifile.open(filename);
+
+		folder = folder + filename;
+		ifile.open(folder);
 		if (!ifile){
 			cout << "File name: " << filename << " does not exist" << endl;
 			continue;
@@ -27,17 +30,19 @@ int main(){
 	}
 	ifile.close();
 
+	cout << folder << endl;
+
 	while (itype < 0 || itype > 1){
-		cout << "Please enter the file enter 1 for coordinates or 0 for distance matrix:	";
+		cout << "Please enter the file type 0 for distance matrix or 1 for coordinates:	";
 		
 		cin >> itype;
 
 		if (itype < 0 || itype > 1){
-			cout << "Please enter either 0 or 1 " << itype << endl;
+			cout << "Please enter either 0 or 1 " << endl;
 		}
 	}
 
-	TSP tsp(filename, static_cast<input_type>(itype));
+	TSP tsp(folder, static_cast<input_type>(itype));
 
 	int in = -1;
 
