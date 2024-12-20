@@ -1,8 +1,8 @@
-tsp: main.o christofides.o graph.o nearest_neighbor.o brute_force.o dynamic_tsp.o
-	g++ -o tsp main.o christofides.o graph.o nearest_neighbor.o brute_force.o tsp
+tsp: main.o christofides.o graph.o nearest_neighbor.o brute_force.o dynamic_tsp.o genetic_tsp.o
+	g++ -o tsp main.o christofides.o graph.o nearest_neighbor.o brute_force.o genetic_tsp.o tsp
 
-main.o: TSP.h main.cpp graph.cpp christofides.cpp nearest_neighbor.cpp brute_force.cpp dynamic_tsp.cpp
-	g++ -std=c++11 main.cpp graph.cpp christofides.cpp nearest_neighbor.cpp brute_force.cpp dynamic_tsp.cpp
+main: TSP.h main.cpp graph.cpp christofides.cpp nearest_neighbor.cpp brute_force.cpp dynamic_tsp.cpp genetic_tsp.cpp
+	g++ -std=c++11 main.cpp graph.cpp christofides.cpp nearest_neighbor.cpp brute_force.cpp dynamic_tsp.cpp genetic_tsp.cpp -o main
 
 graph.o: TSP.h graph.cpp
 	g++ -std=c++11 graph.cpp
@@ -18,6 +18,9 @@ brute_force.o: TSP.h brute_force.cpp
 
 dynamic_tsp.o: TSP.h dynamic_tsp.cpp
 	g++ -std=c++11 dynamic_tsp.cpp
+
+genetic_tsp.o: TSP.h genetic_tsp.cpp
+	g++ -std=c++11 genetic_tsp.cpp
 
 clean:
 	rm *.o
