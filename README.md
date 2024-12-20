@@ -15,11 +15,15 @@ After intstalling you should run:
 make main
 ./main
 ```
-Now you can type in your input file and choose an algorithm to solve TSP. For example:
+Now you can type in your input file and choose an algorithm to solve TSP (more examples in txt_files directory). For example:
 
 ```
 p01_d.txt
 ```
-Then enter the input file type, in this case 1 = coordinates. Then select the algorithm to run.
+Then enter the input file type by entering 1. Then select the algorithm to run.
+
+The algorithm you selected will then run and output the path it generated with the total distance found.
+
+Note: this is a NP-Hard problem and some sample problems in txt_files will take a long time to execute.
 
 
